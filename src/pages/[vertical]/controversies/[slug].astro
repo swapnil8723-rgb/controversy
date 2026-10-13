@@ -3,14 +3,15 @@ import { render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import StatusChip from '../../../components/StatusChip.astro';
-import HeatBadge from '../../../components/HeatBadge.astro';
+import Fresh from '../../../components/Fresh.astro';
+import Faceoff from '../../../components/Faceoff.astro';
 import VerticalTag from '../../../components/VerticalTag.astro';
 import Claim from '../../../components/Claim.astro';
 import SourceSheets from '../../../components/SourceSheets.astro';
 import ShareBar from '../../../components/ShareBar.astro';
 import StoryMode from '../../../components/StoryMode.astro';
 import RecordCard from '../../../components/RecordCard.astro';
-import { loadAll, entitiesOf, entityUrl, explainerUrl, recordUrl, heatOf, type Rec } from '../../../lib/content';
+import { loadAll, entitiesOf, entityUrl, explainerUrl, recordUrl, faceoffOf, type Rec } from '../../../lib/content';
 import { VERTICAL, STATUS } from '../../../lib/taxonomy';
 import { day, month, iso, anchor } from '../../../lib/format';
 import { article, breadcrumbs } from '../../../lib/jsonld';
@@ -27,6 +28,7 @@ const { Content } = await render(r);
 const hasBody = !!r.body?.trim();
 const { records, explainers } = await loadAll();
 const ents = await entitiesOf(r);
+const pair = await faceoffOf(r);
 const related = d.related.map((ref) => records.find((x) => x.id === ref.id)).filter((x): x is Rec => !!x);
 const moreSame = records.filter((x) => x.data.vertical === d.vertical && x.id !== r.id && !related.includes(x)).slice(0, 3 - Math.min(3, related.length));
 const explained = explainers.filter((x) => x.data.records.some((ref) => ref.id === r.id));
@@ -60,27 +62,33 @@ const ld = [
 ];
 ---
 <Base title={d.seoTitle ?? d.title} description={d.summary} image={`/og/${r.id}.png`} type="article" jsonld={ld} published={d.published} modified={d.updated} section={v.label}>
-  <article class="wrap pt-5" style={`--v:var(--${d.vertical})`} data-pagefind-body data-pagefind-meta={`vertical:${v.label}`}>
-    <Breadcrumbs items={crumbs} />
-
-    <header class="mt-5 max-w-3xl">
-      <div class="flex flex-wrap items-center gap-1.5" data-pagefind-ignore>
-        <VerticalTag vertical={d.vertical} />
-        <StatusChip status={d.status} size="md" />
-        <HeatBadge heat={heatOf(r)} />
+  <article style={`--v:var(--${d.vertical})`} data-pagefind-body data-pagefind-meta={`vertical:${v.label}`}>
+    <!-- Hero: category wash, who's involved, the headline and how fresh it is -->
+    <header class="border-b border-line" style="background:radial-gradient(70rem 26rem at 0% 0%,color-mix(in oklab,var(--v) 20%,transparent),transparent 60%),radial-gradient(40rem 20rem at 100% 100%,color-mix(in oklab,var(--v) 8%,transparent),transparent 70%)">
+      <div class="wrap pb-8 pt-5">
+        <Breadcrumbs items={crumbs} />
+        <div class="mt-6 flex flex-wrap items-center gap-1.5" data-pagefind-ignore>
+          <VerticalTag vertical={d.vertical} />
+          <StatusChip status={d.status} size="md" />
+          <Fresh r={r} />
+        </div>
+        <h1 class="display mt-4 max-w-4xl text-[2.15rem] sm:text-[3.4rem]">{d.title}</h1>
+        <div class="mt-6 flex flex-wrap items-center justify-between gap-4" data-pagefind-ignore>
+          <Faceoff pair={pair} ents={ents} size={48} names />
+          <p class="mono text-muted">
+            Verified <time datetime={iso(d.lastVerified)}>{day(d.lastVerified)}</time> · {sourceCount} sources ({primaryCount} primary) · {minutes} min
+          </p>
+        </div>
       </div>
-      <h1 class="display mt-4 text-[1.9rem] sm:text-[2.6rem]">{d.title}</h1>
-      <p class="mono mt-4 text-muted" data-pagefind-ignore>
-        Last verified <time datetime={iso(d.lastVerified)}>{day(d.lastVerified)}</time> · {sourceCount} sources ({primaryCount} primary) · {minutes} min read
-      </p>
     </header>
 
-    <div class="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
+    <div class="wrap">
+    <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
       <div class="min-w-0">
         <!-- The 30-second version -->
-        <section aria-labelledby="tldr" class="card relative overflow-hidden p-5 sm:p-6" style="border-color:color-mix(in oklab,var(--v) 40%,var(--line))">
+        <section aria-labelledby="tldr" class="card wash relative mt-6 overflow-hidden p-5 sm:p-6" style="border-color:color-mix(in oklab,var(--v) 40%,var(--line))">
           <div class="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full opacity-20 blur-3xl" style="background:var(--v)"></div>
-          <h2 id="tldr" class="kicker" style="color:var(--v)">TL;DR · the 30-second version</h2>
+          <h2 id="tldr" class="label" style="color:var(--v)">⚡ TL;DR · the 30-second lore</h2>
           <ol class="mt-3 space-y-3">
             {d.tldr.map((t, i) => (
               <li class="flex gap-3">
@@ -97,18 +105,32 @@ const ld = [
 
         <!-- Where it stands -->
         <section aria-labelledby="stands" class={`mt-4 rounded-2xl border p-4 ${STATUS[d.status].cls}`} style="background:color-mix(in oklab,currentColor 7%,transparent)">
-          <h2 id="stands" class="kicker" style="color:inherit">Where it stands · {STATUS[d.status].label}</h2>
+          <h2 id="stands" class="label" style="color:inherit">Where it stands · {STATUS[d.status].label}</h2>
           <p class="mt-1.5 font-semibold text-text">{d.statusNote}</p>
           <p class="mt-1 text-sm text-muted">{STATUS[d.status].long}</p>
         </section>
 
+        {d.next && (
+          <section aria-labelledby="whatsnext" class="card mt-4 flex items-center gap-4 p-4" style="border-color:color-mix(in oklab,var(--lime) 35%,var(--line))">
+            <time datetime={iso(d.next.date)} class="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl" style="background:var(--lime);color:var(--on-lime)">
+              <span class="text-[0.62rem] font-bold uppercase tracking-wider">{day(d.next.date).split(' ')[1]}</span>
+              <span class="display text-[1.5rem] leading-none">{d.next.date.getUTCDate()}</span>
+            </time>
+            <div>
+              <h2 id="whatsnext" class="label">What's next</h2>
+              <p class="mt-0.5 font-semibold">{d.next.label}</p>
+              <p class="text-sm text-muted">{day(d.next.date)}. We'll update this page when it happens.</p>
+            </div>
+          </section>
+        )}
+
         {d.keyFacts.length > 0 && (
           <section aria-labelledby="facts" class="mt-8">
-            <h2 id="facts" class="display text-xl">Key facts</h2>
+            <h2 id="facts" class="display text-[1.6rem]">Key facts</h2>
             <dl class="mt-3 grid grid-cols-2 gap-2">
               {d.keyFacts.map((f) => (
                 <div class="card p-3.5">
-                  <dt class="kicker">{f.label}</dt>
+                  <dt class="label">{f.label}</dt>
                   <dd class="mt-1 text-[0.92rem] font-semibold leading-snug sm:text-base">{f.value}</dd>
                 </div>
               ))}
@@ -118,8 +140,8 @@ const ld = [
 
         <!-- Timeline: dated headings so readers and Google can jump to each event -->
         <section aria-labelledby="timeline" class="mt-10">
-          <h2 id="timeline" class="display text-xl">Timeline</h2>
-          <p class="mt-1 text-sm text-muted">Tap a 🧾 chip to see the source. <span style="color:var(--accent)">Highlighted</span> chips are primary sources: official bodies, courts or the people involved.</p>
+          <h2 id="timeline" class="display text-[1.6rem]">Timeline</h2>
+          <p class="mt-1 text-sm text-muted">Tap a 🧾 chip to see the source. <span style="color:var(--link)">Highlighted</span> chips are primary sources: official bodies, courts or the people involved.</p>
           <ol class="relative mt-6 border-l-2 pl-6" style="border-color:color-mix(in oklab,var(--v) 35%,var(--line))">
             {d.timeline.map((t, i) => (
               <li class="relative pb-8 last:pb-0" id={anchor(t.date, i)}>
@@ -139,7 +161,7 @@ const ld = [
         <!-- The other side: mandatory when an allegation appears -->
         {(d.responses.length > 0 || d.noResponseFound) && (
           <section aria-labelledby="responses" class="mt-10">
-            <h2 id="responses" class="display text-xl">The other side</h2>
+            <h2 id="responses" class="display text-[1.6rem]">The other side</h2>
             <div class="card mt-4 space-y-5 p-5">
               {d.responses.map((c) => <Claim text={c.text} kind={c.kind} by={c.by} cite={c.cite} sources={d.sources} />)}
               {d.noResponseFound && (
@@ -157,11 +179,11 @@ const ld = [
 
         {explained.length > 0 && (
           <section aria-labelledby="explained" class="mt-10" data-pagefind-ignore>
-            <h2 id="explained" class="display text-xl">Explained</h2>
+            <h2 id="explained" class="display text-[1.6rem]">Explained</h2>
             <div class="mt-3 grid gap-3 sm:grid-cols-2">
               {explained.map((x) => (
-                <a href={explainerUrl(x)} class="card card-link p-4 no-underline">
-                  <p class="kicker">Explainer</p>
+                <a href={explainerUrl(x)} class="card lift p-4 no-underline">
+                  <p class="label">Explainer</p>
                   <p class="mt-1.5 font-bold leading-snug">{x.data.title}</p>
                 </a>
               ))}
@@ -171,13 +193,13 @@ const ld = [
 
         <!-- Receipts -->
         <section aria-labelledby="sources" class="mt-10">
-          <h2 id="sources" class="display text-xl">Sources</h2>
+          <h2 id="sources" class="display text-[1.6rem]">Sources</h2>
           <ol class="mt-4 space-y-3">
             {d.sources.map((s, i) => (
               <li class="card flex gap-3 p-4">
                 <span class="display text-sm" style="color:var(--v)">{i + 1}</span>
                 <div class="min-w-0">
-                  <p class="font-semibold">{s.name} <span class="chip ml-1" style={s.tier !== 'major-outlet' ? 'color:var(--accent)' : 'color:var(--muted)'}>{s.tier === 'major-outlet' ? 'Reported' : s.tier === 'on-record' ? 'On record' : s.tier === 'court' ? 'Court' : 'Official'}</span></p>
+                  <p class="font-semibold">{s.name} <span class="chip ml-1" style={s.tier !== 'major-outlet' ? 'color:var(--link)' : 'color:var(--muted)'}>{s.tier === 'major-outlet' ? 'Reported' : s.tier === 'on-record' ? 'On record' : s.tier === 'court' ? 'Court' : 'Official'}</span></p>
                   <p class="mt-0.5 text-sm text-muted">{s.title}</p>
                   <p class="mono mt-1.5 text-muted">
                     {s.published && <>{day(s.published)} · </>}
@@ -192,7 +214,7 @@ const ld = [
 
         <!-- Corrections and editorial note -->
         <section aria-labelledby="corrections" class="mt-10" data-pagefind-ignore>
-          <h2 id="corrections" class="display text-xl">Corrections</h2>
+          <h2 id="corrections" class="display text-[1.6rem]">Corrections</h2>
           {d.corrections.length === 0 ? (
             <p class="mt-2 text-muted">No corrections so far.</p>
           ) : (
@@ -208,13 +230,13 @@ const ld = [
       </div>
 
       <!-- Side rail: who's involved + share (sticky on desktop) -->
-      <aside class="lg:sticky lg:top-20 lg:self-start" data-pagefind-ignore>
+      <aside class="mt-6 lg:sticky lg:top-20 lg:self-start" data-pagefind-ignore>
         <div class="card p-4">
-          <p class="kicker">Share the receipts</p>
+          <p class="label">Share the lore</p>
           <div class="mt-3"><ShareBar url={url} title={d.title} storyCard={`/og/${r.id}-story.png`} /></div>
         </div>
         <div class="card mt-4 p-4">
-          <p class="kicker">Who's involved</p>
+          <p class="label">Who's involved</p>
           <ul class="mt-3 space-y-2">
             {ents.map((e) => (
               <li>
@@ -227,7 +249,7 @@ const ld = [
           </ul>
         </div>
         <nav aria-label="On this page" class="card mt-4 hidden p-4 lg:block">
-          <p class="kicker">Jump to</p>
+          <p class="label">Jump to</p>
           <ol class="mt-2 space-y-1.5 text-sm">
             {d.timeline.map((t, i) => (
               <li><a class="flex gap-2 no-underline hover:underline" href={`#${anchor(t.date, i)}`}><span class="mono shrink-0 text-muted">{t.dateLabel ?? month(t.date)}</span><span class="line-clamp-1">{t.headline}</span></a></li>
@@ -239,12 +261,13 @@ const ld = [
 
     {(related.length + moreSame.length) > 0 && (
       <section aria-labelledby="more" class="mt-14" data-pagefind-ignore>
-        <h2 id="more" class="display text-xl">Keep reading</h2>
+        <h2 id="more" class="display text-[1.6rem]">Keep reading</h2>
         <div class="rail mt-4">
           {[...related, ...moreSame].slice(0, 3).map((x) => <RecordCard r={x} />)}
         </div>
       </section>
     )}
+    </div>
   </article>
   <SourceSheets sources={d.sources} />
 </Base>

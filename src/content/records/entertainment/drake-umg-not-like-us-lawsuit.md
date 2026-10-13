@@ -1,6 +1,7 @@
 ---
 title: "Drake vs UMG: the 'Not Like Us' defamation lawsuit and appeal"
 seoTitle: "Drake vs UMG 'Not Like Us' lawsuit: appeal timeline"
+tag: "Drake appeal"
 summary: "Why Drake sued his own label over Kendrick Lamar's 'Not Like Us', why a judge dismissed the case in 2025, and where his appeal stands in 2026."
 tldr:
   - "In January 2025 Drake sued Universal Music Group, his own label, alleging it defamed him by promoting Kendrick Lamar's diss track 'Not Like Us'. He did not sue Lamar."
@@ -11,6 +12,8 @@ status: in-court
 statusNote: "On appeal at the US Court of Appeals for the Second Circuit (Graham v. UMG Recordings). Argument is set for 4 December 2026."
 riskTier: medium
 entities: [drake, universal-music-group, kendrick-lamar]
+faceoff: [drake, universal-music-group]
+next: { date: 2026-12-04, label: "Appeal argument, Second Circuit" }
 keywords: ["drake lawsuit umg", "drake not like us lawsuit", "drake appeal", "drake defamation case", "kendrick lamar drake lawsuit"]
 keyFacts:
   - { label: "Case", value: "Graham v. UMG Recordings, Inc." }

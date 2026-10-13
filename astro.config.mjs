@@ -3,8 +3,8 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 // Static-first: every page is plain HTML on a CDN. The public origin comes from
-// SITE_URL (set it once the domain is chosen); src/site.ts reads the same value.
-const SITE = process.env.SITE_URL || 'https://receipts.example';
+// SITE_URL (defaults to lorecheck.co); src/site.ts reads the same value.
+const SITE = process.env.SITE_URL || 'https://lorecheck.co';
 
 export default defineConfig({
   site: SITE,

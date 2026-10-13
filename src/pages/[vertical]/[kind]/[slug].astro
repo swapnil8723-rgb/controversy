@@ -40,7 +40,7 @@ const host = (u: string) => new URL(u).hostname.replace(/^www\./, '').replace(/^
   <div class="wrap pt-6" style={`--v:var(--${d.vertical})`} data-pagefind-body>
     <Breadcrumbs items={crumbs} />
     <header class="mt-6 max-w-3xl">
-      <p class="kicker" style="color:var(--v)">{v.emoji} {d.role}{d.country ? ` · ${d.country}` : ''}</p>
+      <p class="label" style="color:var(--v)">{v.emoji} {d.role}{d.country ? ` · ${d.country}` : ''}</p>
       <h1 class="display mt-3 text-[2rem] sm:text-[3rem]">{d.name}</h1>
       <p class="mt-4 text-[1.05rem] text-muted">{d.bio}</p>
       {d.sameAs.length > 0 && (
@@ -51,12 +51,12 @@ const host = (u: string) => new URL(u).hostname.replace(/^www\./, '').replace(/^
     </header>
 
     <section class="mt-10" aria-labelledby="stories">
-      <h2 id="stories" class="display text-xl">{d.name} controversies <span class="text-muted">({recs.length})</span></h2>
+      <h2 id="stories" class="display text-[1.6rem]">{d.name} controversies <span class="text-muted">({recs.length})</span></h2>
       <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{recs.map((r) => <RecordCard r={r} showVertical={false} />)}</div>
     </section>
 
     <section class="mt-12" aria-labelledby="tl" data-pagefind-ignore>
-      <h2 id="tl" class="display text-xl">Combined timeline</h2>
+      <h2 id="tl" class="display text-[1.6rem]">Combined timeline</h2>
       <LatestFeed records={recs} />
     </section>
   </div>

@@ -2,8 +2,9 @@
 import Page from '../layouts/Page.astro';
 import { BRAND } from '../site';
 ---
-<Page title={`About ${BRAND.name}`} path="/about/" kicker="About" description={`${BRAND.name} turns the controversies everyone argues about into sourced, neutral timelines: football, cricket and entertainment.`}>
-  <p>Big controversies get covered in dozens of separate articles, each on a different day. If you just want to know <em>what happened, and where it stands now</em>, you end up reading ten of them.</p>
+<Page title={`About ${BRAND.name}`} path="/about/" label="About" description={`${BRAND.name} turns the controversies everyone argues about into sourced, neutral timelines: football, cricket and entertainment.`}>
+  <p>Big controversies get covered in dozens of separate articles, each on a different day. If you just want to know <em>what's the lore</em>, meaning what happened and where it stands now, you end up reading ten of them.</p>
+  <p>{BRAND.name} covers the controversies people are talking about this month, each on one page.</p>
   <p>{BRAND.name} puts each story on one page: a 30-second summary, a dated timeline, the official decisions, both sides' statements, and a status label telling you whether it is ongoing, in court or resolved. Every line links to its source, so you can check it yourself.</p>
   <h2>What we cover</h2>
   <ul>

@@ -1,0 +1,20 @@
+---
+// "A vs B" header for a story with two named sides; otherwise an avatar stack of who's involved.
+import Avatar from './Avatar.astro';
+import type { Ent } from '../lib/content';
+interface Props { pair?: readonly [Ent, Ent]; ents: Ent[]; size?: number; names?: boolean }
+const { pair, ents, size = 40, names = false } = Astro.props;
+---
+{pair ? (
+  <div class="flex items-center gap-2" aria-label={`${pair[0].data.name} versus ${pair[1].data.name}`}>
+    <Avatar e={pair[0]} size={size} />
+    <span class="display text-[0.8rem] tracking-wide text-muted" aria-hidden="true">VS</span>
+    <Avatar e={pair[1]} size={size} />
+    {names && <span class="ml-1 text-sm font-semibold leading-tight"><span class="block">{pair[0].data.name}</span><span class="block text-muted">vs {pair[1].data.name}</span></span>}
+  </div>
+) : (
+  <div class="flex items-center" aria-label={`Involves ${ents.map((e) => e.data.name).join(', ')}`}>
+    {ents.slice(0, 3).map((e, i) => <span style={i ? `margin-left:-${size * 0.14}px` : ''}><Avatar e={e} size={size} /></span>)}
+    {names && <span class="ml-2.5 text-sm font-semibold leading-tight">{ents.slice(0, 2).map((e) => e.data.name).join(' · ')}</span>}
+  </div>
+)}

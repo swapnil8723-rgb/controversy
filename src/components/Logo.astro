@@ -1,13 +1,13 @@
 ---
-// Wordmark: a torn-edge receipt with a tick, plus the brand name.
+// Wordmark: a speech bubble (the lore people talk about) with a tick (fact-checked).
 import { BRAND } from '../site';
 interface Props { size?: number; withName?: boolean }
 const { size = 28, withName = true } = Astro.props;
 ---
 <span class="inline-flex items-center gap-2">
   <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-    <path d="M7 3h18v24l-3-2-3 2-3-2-3 2-3-2-3 2z" fill="var(--accent)" />
-    <path d="M11.5 15.5l3 3 6-6.5" fill="none" stroke="var(--accent-ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M6 4h20a3 3 0 0 1 3 3v13a3 3 0 0 1-3 3H14.5L8 28.5V23H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" fill="var(--lime)" />
+    <path d="M10.2 13.6l3.7 3.7 7.9-8" fill="none" stroke="#0b0b10" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
-  {withName && <span class="display text-[1.15rem] lowercase tracking-tight">{BRAND.name}</span>}
+  {withName && <span class="display text-[1.3rem] lowercase leading-none tracking-tight">{BRAND.name}</span>}
 </span>

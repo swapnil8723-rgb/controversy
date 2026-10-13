@@ -21,7 +21,7 @@ let lastYear = '';
       <>
         {showYear && <li class="display pt-4 text-lg text-muted" aria-hidden="true">{y}</li>}
         <li>
-          <a href={`${recordUrl(r)}#${anchor(t.date, i)}`} class="card card-link flex gap-4 p-4 no-underline" style={`--v:var(--${r.data.vertical})`}>
+          <a href={`${recordUrl(r)}#${anchor(t.date, i)}`} class="card lift flex gap-4 p-4 no-underline" style={`--v:var(--${r.data.vertical})`}>
             <time class="mono w-20 shrink-0 pt-0.5" style="color:var(--v)" datetime={iso(t.date)}>{t.dateLabel ?? day(t.date)}</time>
             <div class="min-w-0">
               <p class="font-bold leading-snug">{t.headline}</p>

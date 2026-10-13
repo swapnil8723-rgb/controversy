@@ -50,6 +50,7 @@ const records = defineCollection({
     .object({
       title: z.string().max(70),
       seoTitle: z.string().max(60).optional(),
+      tag: z.string().max(20), // short label for story bubbles, e.g. "FIFA vs UEFA"
       summary: z.string().max(160),
       tldr: z.array(z.string().max(200)).length(3), // the 30-second version
       vertical: z.enum(VERTICALS),
@@ -57,6 +58,10 @@ const records = defineCollection({
       statusNote: z.string().max(220), // one line: where it stands today
       riskTier: z.enum(['low', 'medium']), // 'high' is not publishable in phase 1
       entities: z.array(reference('entities')).min(1),
+      // The two sides shown as "A vs B" on cards and the page header (defaults to the first two entities).
+      faceoff: z.tuple([reference('entities'), reference('entities')]).optional(),
+      // The next known date in the story (hearing, deadline, meeting), shown as "What's next".
+      next: z.object({ date: z.coerce.date(), label: z.string().max(60) }).optional(),
       keywords: z.array(z.string()).default([]),
       sources: z.array(source).min(2),
       timeline: z
@@ -102,6 +107,7 @@ const entities = defineCollection({
     role: z.string(), // e.g. "England batter", "Premier League club"
     bio: z.string().min(60).max(360), // neutral, factual one-paragraph description
     country: z.string().optional(),
+    short: z.string().max(4).optional(), // avatar label, e.g. "MCFC"; defaults to initials
     sameAs: z.array(z.string().url()).default([]), // Wikipedia / official site
   }),
 });

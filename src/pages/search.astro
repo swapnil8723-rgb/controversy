@@ -25,7 +25,7 @@ import Base from '../layouts/Base.astro';
   <style is:global>
     #search {
       --pagefind-ui-scale: 1;
-      --pagefind-ui-primary: var(--accent);
+      --pagefind-ui-primary: var(--link);
       --pagefind-ui-text: var(--text);
       --pagefind-ui-background: var(--card);
       --pagefind-ui-border: var(--line);
@@ -36,6 +36,6 @@ import Base from '../layouts/Base.astro';
     }
     #search .pagefind-ui__result-link { color: var(--text); }
     #search .pagefind-ui__result-excerpt { color: var(--muted); }
-    #search mark { background: color-mix(in oklab, var(--accent) 35%, transparent); color: inherit; }
+    #search mark { background: color-mix(in oklab, var(--link) 35%, transparent); color: inherit; }
   </style>
 </Base>

@@ -1,15 +1,15 @@
-// One place for brand and origin. The brand is a working name until the domain is
-// chosen: change NAME/HANDLE here and set SITE_URL in the deploy environment.
-export const SITE_URL = (import.meta.env.SITE as string | undefined)?.replace(/\/$/, '') || 'https://receipts.example';
+// One place for brand and origin. Set SITE_URL in the deploy environment; it defaults to
+// the chosen domain.
+export const SITE_URL = (import.meta.env.SITE as string | undefined)?.replace(/\/$/, '') || 'https://lorecheck.co';
 
 export const BRAND = {
-  name: 'Receipts',
-  tagline: 'Controversies, with the receipts.',
+  name: 'Lorecheck',
+  tagline: 'The full lore. Fact-checked.',
   description:
-    'Sourced timelines of the biggest football, cricket and entertainment controversies: what happened, what is proven, what is alleged, and where it stands now.',
-  handle: '@receipts',
-  email: 'hello@receipts.example',
-  grievanceEmail: 'grievance@receipts.example',
+    "This month's biggest football, cricket and entertainment controversies, fact-checked: what happened, what's proven, what's only alleged, and where it stands now.",
+  handle: '@lorecheck',
+  email: 'hello@lorecheck.co',
+  grievanceEmail: 'grievance@lorecheck.co',
   locale: 'en',
   // Audience: India, US, UK and Europe, Australia, New Zealand. Dates use "13 Oct 2026"
   // so they read the same everywhere; football is also called soccer for US readers.

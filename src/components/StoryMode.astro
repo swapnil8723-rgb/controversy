@@ -3,14 +3,14 @@
 // where it stands). Built from the same verified data as the page; it advances only
 // when the reader taps or swipes, never on a timer.
 import { STATUS, VERTICAL, type Status, type Vertical } from '../lib/taxonomy';
-interface Slide { kicker: string; title: string; body?: string }
+interface Slide { label: string; title: string; body?: string }
 interface Props { vertical: Vertical; status: Status; title: string; tldr: string[]; events: { date: string; headline: string; text: string }[]; standing: string; brand: string }
 const { vertical, status, title, tldr, events, standing, brand } = Astro.props;
 const slides: Slide[] = [
-  { kicker: `${VERTICAL[vertical].emoji} ${VERTICAL[vertical].label} · ${STATUS[status].label}`, title },
-  ...tldr.map((t, i) => ({ kicker: `TL;DR ${i + 1}/3`, title: t })),
-  ...events.map((e) => ({ kicker: e.date, title: e.headline, body: e.text })),
-  { kicker: 'Where it stands', title: standing, body: `Full timeline and every source on ${brand}.` },
+  { label: `${VERTICAL[vertical].emoji} ${VERTICAL[vertical].label} · ${STATUS[status].label}`, title },
+  ...tldr.map((t, i) => ({ label: `TL;DR ${i + 1}/3`, title: t })),
+  ...events.map((e) => ({ label: e.date, title: e.headline, body: e.text })),
+  { label: 'Where it stands', title: standing, body: `Full timeline and every source on ${brand}.` },
 ];
 ---
 <button type="button" class="btn story-open" data-story-open>
@@ -22,7 +22,7 @@ const slides: Slide[] = [
   <div class="story-track">
     {slides.map((s, i) => (
       <section class="story-slide" aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`}>
-        <p class="kicker" style="color:var(--v)">{s.kicker}</p>
+        <p class="label" style="color:var(--v)">{s.label}</p>
         <p class:list={['display mt-4', i === 0 ? 'text-[2rem]' : 'text-[1.45rem]']}>{s.title}</p>
         {s.body && <p class="mt-5 text-[1.02rem] text-muted">{s.body}</p>}
       </section>
@@ -83,5 +83,10 @@ const slides: Slide[] = [
       if (e.key === 'ArrowLeft') go(current() - 1);
     });
     dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    // Story bubbles on the home page link here with #story: open straight into story mode.
+    if (location.hash === '#story') {
+      btn.click();
+      dlg.addEventListener('close', () => history.replaceState(null, '', location.pathname), { once: true });
+    }
   }
 </script>

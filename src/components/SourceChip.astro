@@ -5,6 +5,6 @@ interface Props { id: string; n: number; name: string; tier: Tier }
 const { id, n, name, tier } = Astro.props;
 const strong = tier !== 'major-outlet';
 ---
-<button type="button" popovertarget={`src-${id}`} class="chip max-w-full cursor-pointer !whitespace-normal text-left hover:border-muted align-middle" style={strong ? 'color:var(--accent);border-color:color-mix(in oklab,var(--accent) 40%,transparent)' : 'color:var(--muted)'} aria-label={`Source ${n}: ${name} (${TIER[tier].label})`}>
+<button type="button" popovertarget={`src-${id}`} class="chip max-w-full cursor-pointer !whitespace-normal text-left hover:border-muted align-middle" style={strong ? 'color:var(--link);border-color:color-mix(in oklab,var(--link) 40%,transparent)' : 'color:var(--muted)'} aria-label={`Source ${n}: ${name} (${TIER[tier].label})`}>
   <span aria-hidden="true">🧾</span>{n} · {name}
 </button>

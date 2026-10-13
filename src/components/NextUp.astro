@@ -1,0 +1,33 @@
+---
+// "What's next": the upcoming dates in the stories we track, soonest first.
+import { recordUrl, upcoming, BUILD_TIME } from '../lib/content';
+import { VERTICAL, type Vertical } from '../lib/taxonomy';
+import { iso } from '../lib/format';
+interface Props { vertical?: Vertical; limit?: number }
+const { vertical, limit = 6 } = Astro.props;
+const items = (await upcoming()).filter((x) => !vertical || x.r.data.vertical === vertical).slice(0, limit);
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const inDays = (d: Date) => Math.round((d.getTime() - new Date(BUILD_TIME.toISOString().slice(0, 10)).getTime()) / 864e5);
+---
+{items.length > 0 && (
+  <ol class="no-bar flex gap-3 overflow-x-auto pb-1">
+    {items.map(({ r, date, label }) => {
+      const n = inDays(date);
+      return (
+        <li class="shrink-0">
+          <a href={recordUrl(r)} class="card lift flex w-[16.5rem] items-center gap-3 p-3 no-underline" style={`--v:var(--${r.data.vertical})`}>
+            <time datetime={iso(date)} class="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl" style="background:color-mix(in oklab,var(--v) 16%,transparent);color:var(--v)">
+              <span class="text-[0.62rem] font-bold uppercase tracking-wider">{MON[date.getUTCMonth()]}</span>
+              <span class="display text-[1.5rem] leading-none">{date.getUTCDate()}</span>
+            </time>
+            <span class="min-w-0">
+              <span class="block text-[0.72rem] font-semibold" style="color:var(--v)">{n <= 0 ? 'Today' : n === 1 ? 'Tomorrow' : `In ${n} days`} · {VERTICAL[r.data.vertical].label}</span>
+              <span class="block font-semibold leading-snug">{label}</span>
+              <span class="block truncate text-xs text-muted">{r.data.tag}</span>
+            </span>
+          </a>
+        </li>
+      );
+    })}
+  </ol>
+)}

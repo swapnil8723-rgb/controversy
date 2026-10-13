@@ -10,14 +10,14 @@ import { VERTICALS, VERTICAL } from '../lib/taxonomy';
       <p class="mt-3 max-w-sm text-sm text-muted">{BRAND.tagline} Every claim links to its source. Allegations are labelled. The other side is always included.</p>
     </div>
     <div>
-      <p class="kicker">Topics</p>
+      <p class="label">Topics</p>
       <ul class="mt-3 space-y-2 text-sm">
         {VERTICALS.map((v) => <li><a class="hover:underline" href={`/${v}/`}>{VERTICAL[v].label}</a></li>)}
         <li><a class="hover:underline" href="/latest/">Latest updates</a></li>
       </ul>
     </div>
     <div>
-      <p class="kicker">Trust</p>
+      <p class="label">Trust</p>
       <ul class="mt-3 space-y-2 text-sm">
         <li><a class="hover:underline" href="/editorial-policy/">Editorial policy</a></li>
         <li><a class="hover:underline" href="/corrections/">Corrections</a></li>
@@ -26,7 +26,7 @@ import { VERTICALS, VERTICAL } from '../lib/taxonomy';
       </ul>
     </div>
     <div>
-      <p class="kicker">More</p>
+      <p class="label">More</p>
       <ul class="mt-3 space-y-2 text-sm">
         <li><a class="hover:underline" href="/contact/">Contact</a></li>
         <li><a class="hover:underline" href="/privacy/">Privacy</a></li>

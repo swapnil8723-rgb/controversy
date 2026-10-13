@@ -12,6 +12,7 @@ import { VERDICT_WORDS } from '../src/lib/taxonomy.ts';
 const strict = process.argv.includes('--strict');
 const checkLinks = process.argv.includes('--links');
 const STALE_DAYS = 14;
+const FRESH_DAYS = 30; // the site's freshness window: older stories belong in archive/
 const now = new Date();
 
 const errors: string[] = [];
@@ -58,6 +59,10 @@ for (const r of records) {
     if (age > STALE_DAYS) fail(r, `open case last verified ${Math.floor(age)} days ago (limit ${STALE_DAYS}); re-check and update lastVerified`);
   }
   if (toDate(d.updated) < toDate(d.published)) fail(r, 'updated is earlier than published');
+  const latest = Math.max(...(d.timeline ?? []).map((t: { date: unknown }) => toDate(t.date).getTime()));
+  const quiet = Math.floor((now.getTime() - latest) / 864e5);
+  if (quiet > FRESH_DAYS) warn(r, `no new development for ${quiet} days; move it to archive/ unless something new happened`);
+  if (d.next && toDate(d.next.date) < new Date(now.toISOString().slice(0, 10))) warn(r, `"next" date ${String(d.next.date).slice(0, 10)} has passed; update the story`);
   for (const e of d.entities ?? []) if (!entityIds.has(e)) fail(r, `unknown entity "${e}"`);
   for (const x of d.related ?? []) if (!recordSlugs.has(x)) fail(r, `unknown related record "${x}"`);
   if (String(d.title).length > 70) fail(r, 'title over 70 characters');

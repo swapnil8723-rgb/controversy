@@ -1,6 +1,7 @@
 ---
 title: "Man City 115 charges: timeline, commission decision and appeal"
 seoTitle: "Man City 115 charges: timeline, decision & appeal"
+tag: "Man City verdict"
 summary: "Every step of the Premier League's case against Manchester City, from the 2023 charges to the September 2026 commission decision and the club's appeal."
 tldr:
   - "In February 2023 the Premier League referred alleged breaches of its financial rules by Manchester City, covering 2009/10 to 2017/18, to an independent commission."
@@ -11,6 +12,7 @@ status: in-court
 statusNote: "Under appeal to an independent Appeal Board. Sanctions will be decided at a separate hearing; no date has been announced."
 riskTier: medium
 entities: [manchester-city, premier-league]
+faceoff: [manchester-city, premier-league]
 keywords: ["man city 115 charges", "man city verdict", "manchester city appeal", "premier league financial rules", "man city charges explained"]
 keyFacts:
   - { label: "Seasons covered", value: "2009/10 to 2017/18 (financial rules)" }
@@ -118,7 +120,6 @@ published: 2026-10-13
 updated: 2026-10-13
 lastVerified: 2026-10-13
 reviewedBy: "Draft: awaiting editor sign-off"
-related: [everton-psr-points-deductions]
 ---
 
 ## What has not been decided

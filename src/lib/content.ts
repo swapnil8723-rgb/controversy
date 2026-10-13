@@ -44,20 +44,45 @@ export async function isThinHub(e: Ent) {
   return (await recordsOfEntity(e)).length < 2;
 }
 
-export type Heat = 'hot' | 'warm' | 'cool';
-/**
- * Attention level from the record's own dated events, never an editorial opinion:
- * hot = an official development in the last 30 days; warm = one in the last 180 days
- * or the case is still open; cool = everything else.
- */
-export function heatOf(r: Rec, now = BUILD_TIME): Heat {
-  const days = (now.getTime() - lastEventDate(r).getTime()) / 864e5;
-  if (days <= 30) return 'hot';
-  if (days <= 180 || r.data.status === 'ongoing' || r.data.status === 'in-court') return 'warm';
-  return 'cool';
+/** Days since the record's latest dated development (0 = today). */
+export const ageDays = (r: Rec, now = BUILD_TIME) => Math.max(0, Math.floor((now.getTime() - lastEventDate(r).getTime()) / 864e5));
+
+/** The freshness window the site is built around: stories whose latest development is within it. */
+export const FRESH_DAYS = 30;
+export const isNew = (r: Rec) => ageDays(r) <= 3;
+
+/** Short relative age for pills: "today", "2d ago", "3w ago". */
+export function shortAgo(days: number) {
+  if (days < 1) return 'today';
+  if (days < 14) return `${days}d ago`;
+  if (days < 60) return `${Math.floor(days / 7)}w ago`;
+  return `${Math.floor(days / 30.44)}mo ago`;
 }
 
-export const HEAT_LABEL: Record<Heat, string> = { hot: 'Heating up', warm: 'Simmering', cool: 'Cooled off' };
+/** The two sides shown as "A vs B", only when the record names them explicitly. */
+export async function faceoffOf(r: Rec) {
+  if (!r.data.faceoff) return undefined;
+  const { entities } = await loadAll();
+  const [a, b] = r.data.faceoff.map((ref) => entities.find((e) => e.id === ref.id));
+  return a && b ? ([a, b] as const) : undefined;
+}
+
+/** Avatar label: the entity's own short form, or up to three initials. */
+export function initials(e: Ent) {
+  if (e.data.short) return e.data.short;
+  const words = e.data.name.replace(/[^\p{L}\p{N}\s]/gu, '').split(/\s+/).filter(Boolean);
+  return (words.length === 1 ? words[0].slice(0, 2) : words.slice(0, 3).map((w) => w[0]).join('')).toUpperCase();
+}
+
+/** Upcoming "what's next" dates across records, soonest first. */
+export async function upcoming(now = BUILD_TIME) {
+  const { records } = await loadAll();
+  const today = new Date(now.toISOString().slice(0, 10));
+  return records
+    .filter((r) => r.data.next && r.data.next.date >= today)
+    .map((r) => ({ r, ...r.data.next! }))
+    .sort((a, b) => a.date.getTime() - b.date.getTime());
+}
 
 /** Source lookup for a record or explainer. */
 export function sourceMap<T extends { id: string }>(sources: T[]) {

@@ -1,9 +1,0 @@
----
-import { HEAT_LABEL, type Heat } from '../lib/content';
-interface Props { heat: Heat }
-const { heat } = Astro.props;
-const icon = heat === 'hot' ? '🔥' : heat === 'warm' ? '♨️' : '🧊';
----
-<a href="/editorial-policy/#heat" class="chip no-underline" style={heat === 'hot' ? 'color:var(--hot);border-color:color-mix(in oklab,var(--hot) 45%,transparent)' : 'color:var(--muted)'} title="How we measure attention">
-  <span aria-hidden="true">{icon}</span>{HEAT_LABEL[heat]}
-</a>

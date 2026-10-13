@@ -11,7 +11,7 @@ export async function getStaticPaths() {
     const d = r.data;
     const data: CardData = {
       title: d.title,
-      kicker: VERTICAL[d.vertical].label.toUpperCase(),
+      label: VERTICAL[d.vertical].label.toUpperCase(),
       accent: C[d.vertical],
       status: { label: STATUS[d.status].label, color: C[d.status] },
       lines: d.tldr.map((t) => clip(t, 175)),
@@ -23,7 +23,7 @@ export async function getStaticPaths() {
     const d = x.data;
     out.push({
       params: { name: x.id },
-      props: { story: false, data: { title: d.title, kicker: `${VERTICAL[d.vertical].label.toUpperCase()} · EXPLAINED`, accent: C[d.vertical], lines: [], footer: `${d.sources.length} sources · updated ${day(d.updated)}` } },
+      props: { story: false, data: { title: d.title, label: `${VERTICAL[d.vertical].label.toUpperCase()} · EXPLAINED`, accent: C[d.vertical], lines: [], footer: `${d.sources.length} sources · updated ${day(d.updated)}` } },
     });
   }
   return out;

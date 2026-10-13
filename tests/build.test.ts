@@ -54,10 +54,10 @@ test('every source chip opens a source sheet that exists', () => {
 });
 
 test('thin entity hubs are noindex and left out of the sitemap', () => {
-  const thin = read('cricket/people/charlie-dean/index.html');
+  const thin = read('football/people/gianni-infantino/index.html');
   assert.match(thin, /content="noindex, follow"/);
   const sitemap = read('sitemap.xml');
-  assert.ok(!sitemap.includes('/charlie-dean/'));
+  assert.ok(!sitemap.includes('/gianni-infantino/'));
   assert.ok(sitemap.includes('/football/controversies/man-city-115-charges/'));
 });
 

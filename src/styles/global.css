@@ -1,22 +1,26 @@
 @import "tailwindcss";
-@import "@fontsource-variable/unbounded/wght.css";
+@import "@fontsource-variable/archivo/wdth.css";
 @import "@fontsource-variable/inter/wght.css";
 @import "@fontsource/jetbrains-mono/500.css";
 
-/* Dark is the default look; light follows the system or the toggle.
-   Every text/background pair below keeps at least 4.5:1 contrast. */
+/* Lorecheck design tokens. Dark is the default look; light follows the system or the toggle.
+   --lime is the brand colour and always carries dark text, so it works in both themes.
+   Every text/background pair keeps at least 4.5:1 contrast. */
 :root {
   color-scheme: dark;
-  --bg: #0b0b10;
-  --card: #14141c;
-  --card-2: #1e1e2a;
-  --line: #2c2c3a;
-  --text: #f4f4f8;
-  --muted: #a5a5b8;
-  --accent: #b6ff3b;
-  --accent-ink: #0b0b10;
+  --bg: #09090d;
+  --bg-2: #0f0f15;
+  --card: #15151d;
+  --card-2: #1d1d28;
+  --line: rgb(255 255 255 / 0.08);
+  --line-2: rgb(255 255 255 / 0.14);
+  --text: #f5f5f8;
+  --muted: #a3a3b6;
+  --lime: #c4ff3d;
+  --on-lime: #0b0b10;
+  --link: #c4ff3d;
   --football: #2ee59d;
-  --cricket: #6ea4ff;
+  --cricket: #5b9dff;
   --entertainment: #ff5fae;
   --st-ongoing: #ffb020;
   --st-court: #b18cff;
@@ -24,19 +28,24 @@
   --st-disputed: #ff7a59;
   --st-insufficient: #9a9aae;
   --hot: #ff5a36;
-  --shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset;
+  --shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 10px 30px -18px rgb(0 0 0 / 0.8);
+  /* Avatar fills stay bright in both themes so their dark monograms keep contrast. */
+  --av-football: #2ee59d;
+  --av-cricket: #5b9dff;
+  --av-entertainment: #ff5fae;
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
     color-scheme: light;
-    --bg: #f6f5f1;
+    --bg: #f4f3ef;
+    --bg-2: #ecebe5;
     --card: #ffffff;
-    --card-2: #efeee8;
-    --line: #dcdad2;
+    --card-2: #f1f0ea;
+    --line: rgb(17 17 23 / 0.08);
+    --line-2: rgb(17 17 23 / 0.16);
     --text: #111117;
     --muted: #55556a;
-    --accent: #3d6b00;
-    --accent-ink: #ffffff;
+    --link: #3a6600;
     --football: #00805a;
     --cricket: #1f5fd6;
     --entertainment: #c2186b;
@@ -46,19 +55,20 @@
     --st-disputed: #b9431f;
     --st-insufficient: #5f5f70;
     --hot: #c8330f;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 12px 30px -20px rgb(0 0 0 / 0.25);
   }
 }
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #f6f5f1;
+  --bg: #f4f3ef;
+  --bg-2: #ecebe5;
   --card: #ffffff;
-  --card-2: #efeee8;
-  --line: #dcdad2;
+  --card-2: #f1f0ea;
+  --line: rgb(17 17 23 / 0.08);
+  --line-2: rgb(17 17 23 / 0.16);
   --text: #111117;
   --muted: #55556a;
-  --accent: #3d6b00;
-  --accent-ink: #ffffff;
+  --link: #3a6600;
   --football: #00805a;
   --cricket: #1f5fd6;
   --entertainment: #c2186b;
@@ -68,105 +78,98 @@
   --st-disputed: #b9431f;
   --st-insufficient: #5f5f70;
   --hot: #c8330f;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 12px 30px -20px rgb(0 0 0 / 0.25);
 }
 
 @theme {
   --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
   --color-card: var(--card);
   --color-card-2: var(--card-2);
   --color-line: var(--line);
   --color-text: var(--text);
   --color-muted: var(--muted);
-  --color-accent: var(--accent);
-  --color-accent-ink: var(--accent-ink);
+  --color-lime: var(--lime);
+  --color-on-lime: var(--on-lime);
   --color-football: var(--football);
   --color-cricket: var(--cricket);
   --color-entertainment: var(--entertainment);
   --color-hot: var(--hot);
-  --font-display: "Unbounded Variable", "Arial Black", system-ui, sans-serif;
+  --font-display: "Archivo Variable", "Arial Narrow", system-ui, sans-serif;
   --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --radius-card: 1rem;
 }
 
 @layer base {
-  html {
-    background: var(--bg);
-    color: var(--text);
-    -webkit-text-size-adjust: 100%;
-    scroll-padding-top: 5rem;
-  }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-sans);
-    font-size: 1rem;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-  ::selection { background: var(--accent); color: var(--accent-ink); }
+  html { background: var(--bg); color: var(--text); -webkit-text-size-adjust: 100%; scroll-padding-top: 5rem; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 1rem; line-height: 1.6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  ::selection { background: var(--lime); color: var(--on-lime); }
   a { color: inherit; }
-  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  :focus-visible { outline: 3px solid var(--lime); outline-offset: 2px; border-radius: 6px; }
   h1, h2, h3 { text-wrap: balance; }
   p { text-wrap: pretty; }
 }
 
 @layer components {
-  .wrap { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: 1rem; }
+  .wrap { width: 100%; max-width: 74rem; margin-inline: auto; padding-inline: 1rem; }
   @media (min-width: 640px) { .wrap { padding-inline: 1.5rem; } }
 
-  .display { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
-  .mono { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.02em; }
-  .kicker { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  /* Semi-condensed heavy grotesk: punchy headlines that still fit long titles. */
+  .display { font-family: var(--font-display); font-weight: 820; font-stretch: 82%; letter-spacing: -0.022em; line-height: 1.02; }
+  .label { font-size: 0.7rem; font-weight: 650; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+  .mono { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.01em; }
 
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow); }
-  .card-link { transition: border-color 0.15s, transform 0.15s; }
-  .card-link:hover { border-color: color-mix(in oklab, var(--v, var(--accent)) 70%, var(--line)); }
-  @media (prefers-reduced-motion: no-preference) { .card-link:hover { transform: translateY(-2px); } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 1.25rem; box-shadow: var(--shadow); }
+  .lift { transition: transform 0.18s ease, border-color 0.18s ease; }
+  .lift:hover { border-color: color-mix(in oklab, var(--v, var(--lime)) 55%, var(--line)); }
+  @media (prefers-reduced-motion: no-preference) { .lift:hover { transform: translateY(-3px); } }
 
-  .chip { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 1.75rem; padding: 0.15rem 0.6rem; border-radius: 0.5rem; border: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; white-space: nowrap; }
-  .dot { width: 0.5rem; height: 0.5rem; border-radius: 99px; background: currentColor; flex: none; }
+  /* A soft wash of the category colour, used on hero blocks and lead cards. */
+  .wash { background: radial-gradient(120% 90% at 0% 0%, color-mix(in oklab, var(--v) 22%, transparent), transparent 55%), radial-gradient(90% 70% at 100% 100%, color-mix(in oklab, var(--v) 10%, transparent), transparent 60%), var(--card); }
 
-  .st-ongoing { color: var(--st-ongoing); border-color: color-mix(in oklab, var(--st-ongoing) 45%, transparent); background: color-mix(in oklab, var(--st-ongoing) 10%, transparent); }
-  .st-court { color: var(--st-court); border-color: color-mix(in oklab, var(--st-court) 45%, transparent); background: color-mix(in oklab, var(--st-court) 10%, transparent); }
-  .st-resolved { color: var(--st-resolved); border-color: color-mix(in oklab, var(--st-resolved) 45%, transparent); background: color-mix(in oklab, var(--st-resolved) 10%, transparent); }
-  .st-disputed { color: var(--st-disputed); border-color: color-mix(in oklab, var(--st-disputed) 45%, transparent); background: color-mix(in oklab, var(--st-disputed) 10%, transparent); }
-  .st-insufficient { color: var(--st-insufficient); border-color: color-mix(in oklab, var(--st-insufficient) 45%, transparent); background: color-mix(in oklab, var(--st-insufficient) 10%, transparent); }
+  .chip { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 1.6rem; padding: 0.1rem 0.6rem; border-radius: 999px; border: 1px solid var(--line-2); font-size: 0.72rem; font-weight: 600; white-space: nowrap; }
+  .dot { width: 0.45rem; height: 0.45rem; border-radius: 99px; background: currentColor; flex: none; }
+  .pulse { position: relative; }
+  @media (prefers-reduced-motion: no-preference) {
+    .pulse::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: currentColor; animation: ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite; }
+    @keyframes ping { 75%, 100% { transform: scale(2.4); opacity: 0; } }
+  }
 
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.75rem; padding: 0.5rem 1rem; border-radius: 999px; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--line); background: var(--card-2); color: var(--text); cursor: pointer; text-decoration: none; }
+  .st-ongoing { color: var(--st-ongoing); border-color: color-mix(in oklab, var(--st-ongoing) 40%, transparent); background: color-mix(in oklab, var(--st-ongoing) 10%, transparent); }
+  .st-court { color: var(--st-court); border-color: color-mix(in oklab, var(--st-court) 40%, transparent); background: color-mix(in oklab, var(--st-court) 10%, transparent); }
+  .st-resolved { color: var(--st-resolved); border-color: color-mix(in oklab, var(--st-resolved) 40%, transparent); background: color-mix(in oklab, var(--st-resolved) 10%, transparent); }
+  .st-disputed { color: var(--st-disputed); border-color: color-mix(in oklab, var(--st-disputed) 40%, transparent); background: color-mix(in oklab, var(--st-disputed) 10%, transparent); }
+  .st-insufficient { color: var(--st-insufficient); border-color: color-mix(in oklab, var(--st-insufficient) 40%, transparent); background: color-mix(in oklab, var(--st-insufficient) 10%, transparent); }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.75rem; padding: 0.5rem 1.1rem; border-radius: 999px; font-weight: 650; font-size: 0.9rem; border: 1px solid var(--line-2); background: var(--card-2); color: var(--text); cursor: pointer; text-decoration: none; }
   .btn:hover { border-color: var(--muted); }
-  .btn-accent { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
-  .btn-accent:hover { filter: brightness(1.05); border-color: transparent; }
+  .btn-lime { background: var(--lime); color: var(--on-lime); border-color: transparent; }
+  .btn-lime:hover { filter: brightness(1.04); border-color: transparent; }
 
-  .rail { display: grid; grid-auto-flow: column; grid-auto-columns: min(82%, 20rem); gap: 0.75rem; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding-bottom: 0.5rem; scrollbar-width: thin; }
+  .rail { display: grid; grid-auto-flow: column; grid-auto-columns: min(84%, 21rem); gap: 0.75rem; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding-bottom: 0.5rem; scrollbar-width: none; }
+  .rail::-webkit-scrollbar { display: none; }
   .rail > * { scroll-snap-align: start; }
   @media (min-width: 900px) { .rail { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-columns: auto; overflow: visible; } }
+  .no-bar { scrollbar-width: none; }
+  .no-bar::-webkit-scrollbar { display: none; }
 
-  .prose-r { font-size: 1.02rem; line-height: 1.7; }
-  .prose-r h2 { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin: 2rem 0 0.75rem; letter-spacing: -0.01em; }
+  .prose-r { font-size: 1.02rem; line-height: 1.72; }
+  .prose-r h2 { font-family: var(--font-display); font-weight: 800; font-stretch: 85%; font-size: 1.45rem; margin: 2rem 0 0.75rem; letter-spacing: -0.015em; line-height: 1.1; }
   .prose-r h3 { font-weight: 700; margin: 1.5rem 0 0.5rem; }
   .prose-r p, .prose-r ul, .prose-r ol { margin: 0.75rem 0; }
   .prose-r ul { list-style: disc; padding-left: 1.25rem; }
   .prose-r ol { list-style: decimal; padding-left: 1.25rem; }
   .prose-r li { margin: 0.35rem 0; }
-  .prose-r a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .prose-r a, .link { color: var(--link); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
   .prose-r strong { font-weight: 700; }
   .prose-r table { width: 100%; border-collapse: collapse; font-size: 0.92rem; display: block; overflow-x: auto; }
-  .prose-r th, .prose-r td { border-bottom: 1px solid var(--line); padding: 0.6rem 0.5rem; text-align: left; vertical-align: top; }
-  .prose-r th { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-
-  .link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .prose-r th, .prose-r td { border-bottom: 1px solid var(--line-2); padding: 0.6rem 0.5rem; text-align: left; vertical-align: top; }
+  .prose-r th { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
 
   /* Source sheet: native popover, no script. Bottom sheet on phones, centred card on desktop. */
-  .sheet { margin: auto auto 0; width: 100%; max-width: 32rem; border: 1px solid var(--line); border-radius: 1.25rem 1.25rem 0 0; background: var(--card); color: var(--text); padding: 1.25rem 1.25rem 1.5rem; }
-  .sheet::backdrop { background: rgb(0 0 0 / 0.55); }
-  @media (min-width: 640px) { .sheet { margin: auto; border-radius: 1.25rem; } }
-
-  .ticker { display: flex; gap: 2.5rem; width: max-content; }
-  @media (prefers-reduced-motion: no-preference) { .ticker { animation: tick 45s linear infinite; } .ticker:hover { animation-play-state: paused; } }
-  @keyframes tick { to { transform: translateX(-50%); } }
+  .sheet { margin: auto auto 0; width: 100%; max-width: 32rem; border: 1px solid var(--line-2); border-radius: 1.5rem 1.5rem 0 0; background: var(--card); color: var(--text); padding: 1.25rem 1.25rem 1.75rem; }
+  .sheet::backdrop { background: rgb(0 0 0 / 0.6); backdrop-filter: blur(2px); }
+  @media (min-width: 640px) { .sheet { margin: auto; border-radius: 1.5rem; } }
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -1,6 +1,6 @@
-# Receipts: controversy tracker (working name)
+# Lorecheck: the full lore, fact-checked (lorecheck.co)
 
-Sourced, neutral timelines of football, cricket and entertainment controversies for a Gen Z audience in India, the US, the UK and Europe, Australia and New Zealand. Built from `Plan v1 (superseded).docx` (the "Controversy Tracker: Phase 1 Plan").
+Sourced, neutral timelines of **this month's** football, cricket and entertainment controversies for a Gen Z audience in India, the US, the UK and Europe, Australia and New Zealand. Built from `Plan v1 (superseded).docx` (the "Controversy Tracker: Phase 1 Plan").
 
 Astro 7.3 (static) + Tailwind 4, Pagefind search, share cards rendered at build with Satori. No database and no server.
 
@@ -18,7 +18,11 @@ Astro 7.3 (static) + Tailwind 4, Pagefind search, share cards rendered at build 
 | `npm run archive` | Adds Wayback Machine links for sources (`-- --save` creates snapshots) |
 | `node scripts/shot.ts shots 390 / …` | Screenshots + horizontal-overflow check (preview must be running) |
 
-Set `SITE_URL` when the domain is chosen. The brand name lives in `src/site.ts`.
+The brand and origin live in `src/site.ts` (default `https://lorecheck.co`; override with `SITE_URL`).
+
+## Freshness rule
+
+The site covers controversies with a verified development in the last 30 days. `npm run verify` warns when a story has had no new development for 30 days, or when its `next` date has passed. Quiet stories move to `archive/` (kept, not published) and come back if something new happens.
 
 ## Content
 
@@ -48,4 +52,4 @@ Legal guards are enforced by the schema in `src/content.config.ts`, so the build
 - An editor signs off each page (`reviewedBy`), then `npm run verify:strict` must pass.
 - Run `npm run archive` (and `-- --save` for sources with no snapshot).
 - Name the grievance officer (`src/pages/grievance.astro`) and set the real emails in `src/site.ts`.
-- Choose the brand and domain, set `SITE_URL`, and add a deploy step to `.github/workflows/ci.yml`.
+- Register lorecheck.co and add a deploy step to `.github/workflows/ci.yml`.

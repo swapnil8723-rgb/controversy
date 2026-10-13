@@ -3,7 +3,7 @@ import Page from '../layouts/Page.astro';
 import { BRAND } from '../site';
 import { VERDICT_WORDS } from '../lib/taxonomy';
 ---
-<Page title="Editorial policy" path="/editorial-policy/" kicker="How we work" description={`How ${BRAND.name} sources, labels and corrects every controversy timeline: source tiers, allegations, responses, the heat score and what we never publish.`}>
+<Page title="Editorial policy" path="/editorial-policy/" label="How we work" description={`How ${BRAND.name} sources, labels and corrects every controversy timeline: source tiers, allegations, responses, the heat score and what we never publish.`}>
   <p>{BRAND.name} publishes structured timelines of public controversies in football, cricket and entertainment. Our job is to show what happened, what is established, what is only alleged, and where things stand, with a source for every line.</p>
 
   <h2 id="sources">Every claim has a source</h2>
@@ -35,8 +35,8 @@ import { VERDICT_WORDS } from '../lib/taxonomy';
   <h2 id="status">Status labels</h2>
   <p><strong>Ongoing</strong> means an official process is pending. <strong>In court</strong> means a court, tribunal or appeal body is still deciding. <strong>Resolved</strong> means a final decision, settlement or ruling closed the official process. <strong>Disputed</strong> means the facts are on record but the parties still disagree about them. <strong>Not enough info</strong> means we cannot say where it stands. Status is always shown as words, never colour alone.</p>
 
-  <h2 id="heat">How the heat score works</h2>
-  <p>The heat badge is calculated, not an opinion. <strong>Heating up</strong>: the story's latest dated development is within the last 30 days. <strong>Simmering</strong>: within 180 days, or the case is still open (ongoing or in court). <strong>Cooled off</strong>: everything else. It is recalculated every time the site is built.</p>
+  <h2 id="fresh">How we show freshness</h2>
+  <p>We focus on controversies with a verified development in the last 30 days. Every story shows how long ago its latest development happened, and a <strong>NEW</strong> label when that was within the last three days. Stories that go quiet move to our archive; they return if something new happens.</p>
 
   <h2 id="freshness">Keeping pages current</h2>
   <p>Every page shows when it was last verified. Pages about open cases are re-checked at least every 14 days; our publishing checks block an open-case page that has not been re-verified in that time. We change the “updated” date only when facts change.</p>

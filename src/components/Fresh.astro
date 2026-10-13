@@ -1,0 +1,15 @@
+---
+// Freshness pill: how long ago the latest verified development happened.
+import { ageDays, shortAgo, type Rec } from '../lib/content';
+interface Props { r: Rec }
+const { r } = Astro.props;
+const days = ageDays(r);
+const isNew = days <= 3;
+---
+{isNew ? (
+  <span class="chip" style="color:var(--hot);border-color:color-mix(in oklab,var(--hot) 45%,transparent);background:color-mix(in oklab,var(--hot) 10%,transparent)">
+    <span class="dot pulse" aria-hidden="true"></span>NEW · {shortAgo(days)}
+  </span>
+) : (
+  <span class="chip text-muted"><span class="dot" aria-hidden="true" style="opacity:.6"></span>{shortAgo(days)}</span>
+)}
