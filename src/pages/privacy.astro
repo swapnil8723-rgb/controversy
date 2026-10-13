@@ -1,0 +1,13 @@
+---
+import Page from '../layouts/Page.astro';
+import { BRAND } from '../site';
+---
+<Page title="Privacy" path="/privacy/" kicker="Privacy" description={`What ${BRAND.name} collects (very little) and why.`}>
+  <p>{BRAND.name} has no accounts, no comments and no advertising trackers.</p>
+  <ul>
+    <li><strong>Theme setting:</strong> if you switch between light and dark mode, your choice is saved in your own browser only.</li>
+    <li><strong>Analytics:</strong> we may use privacy-friendly, cookie-free analytics that count page views without identifying you.</li>
+    <li><strong>Email:</strong> if you email us, we use your message only to respond and to fix the page concerned.</li>
+  </ul>
+  <p>Questions: <a href={`mailto:${BRAND.email}`}>{BRAND.email}</a>.</p>
+</Page>

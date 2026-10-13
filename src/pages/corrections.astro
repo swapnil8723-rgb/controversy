@@ -1,0 +1,21 @@
+---
+import Page from '../layouts/Page.astro';
+import { loadAll, recordUrl } from '../lib/content';
+import { day } from '../lib/format';
+const { records } = await loadAll();
+const log = records
+  .flatMap((r) => r.data.corrections.map((c) => ({ r, c })))
+  .sort((a, b) => b.c.date.getTime() - a.c.date.getTime());
+---
+<Page title="Corrections" path="/corrections/" kicker="Accountability" description="Every correction we have made to a controversy timeline, with the date and what changed.">
+  <p>When we get something wrong, we fix it and say so here and on the page itself. To report an error, use our <a href="/contact/">contact page</a>; we acknowledge reports within 24 hours.</p>
+  {log.length === 0 ? (
+    <p class="card p-4 text-muted">No corrections yet.</p>
+  ) : (
+    <ul>
+      {log.map(({ r, c }) => (
+        <li><span class="mono">{day(c.date)}</span>, <a href={recordUrl(r)}>{r.data.title}</a>: {c.note}</li>
+      ))}
+    </ul>
+  )}
+</Page>

@@ -1,0 +1,133 @@
+---
+import Base from '../layouts/Base.astro';
+import RecordCard from '../components/RecordCard.astro';
+import StatusChip from '../components/StatusChip.astro';
+import { loadAll, recordUrl, explainerUrl, heatOf, lastEventDate } from '../lib/content';
+import { VERTICALS, VERTICAL } from '../lib/taxonomy';
+import { day } from '../lib/format';
+import { BRAND } from '../site';
+
+const { records, explainers } = await loadAll();
+const heating = records.filter((r, i) => i > 0 && heatOf(r) !== 'cool').slice(0, 6);
+const ticker = records.slice(0, 8);
+const byV = Object.fromEntries(VERTICALS.map((v) => [v, records.filter((r) => r.data.vertical === v)]));
+const counts = { records: records.length, sources: records.reduce((n, r) => n + r.data.sources.length, 0) };
+const lead = records[0];
+---
+<Base title={`${BRAND.name}: controversies explained, with sources`} description={BRAND.description}>
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-line">
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true" style="background:radial-gradient(40rem 22rem at 85% -10%,color-mix(in oklab,var(--entertainment) 22%,transparent),transparent 70%),radial-gradient(36rem 20rem at 0% 110%,color-mix(in oklab,var(--football) 18%,transparent),transparent 70%),radial-gradient(30rem 18rem at 50% 50%,color-mix(in oklab,var(--cricket) 10%,transparent),transparent 70%)"></div>
+    <div class="wrap relative py-10 sm:py-16">
+      <p class="kicker">Football · Cricket · Entertainment</p>
+      <h1 class="display mt-4 max-w-4xl text-[2.35rem] sm:text-[4rem]">
+        The drama.<br /><span style="color:var(--accent)">With the receipts.</span>
+      </h1>
+      <p class="mt-5 max-w-xl text-[1.08rem] text-muted">
+        Timelines of the controversies everyone's arguing about: what happened, what's proven, what's only alleged, and where it stands now. Every line links to its source.
+      </p>
+      <form action="/search/" method="get" role="search" class="mt-7 flex max-w-xl gap-2">
+        <label for="hero-q" class="sr-only">Search controversies</label>
+        <input id="hero-q" name="q" type="search" placeholder="Try “Man City” or “Bairstow”" class="min-h-12 w-full rounded-full border border-line bg-card px-5 text-base placeholder:text-muted focus:border-accent focus:outline-none" />
+        <button class="btn btn-accent !min-h-12 shrink-0 px-5">Search</button>
+      </form>
+      <p class="mono mt-5 text-muted">{counts.records} stories · {counts.sources} sources · 0 unsourced claims</p>
+    </div>
+  </section>
+
+  <!-- Ticker -->
+  <div class="overflow-hidden border-b border-line py-3" aria-label="Latest stories">
+    <div class="ticker">
+      {[0, 1].map((k) => (
+        <div class="flex shrink-0 gap-10" aria-hidden={k === 1 ? 'true' : undefined}>
+          {ticker.map((r) => (
+            <a href={recordUrl(r)} tabindex={k === 1 ? -1 : undefined} class="flex shrink-0 items-center gap-2 text-sm font-semibold no-underline hover:underline">
+              <span aria-hidden="true">{VERTICAL[r.data.vertical].emoji}</span>{r.data.title}
+              <span class="mono text-muted">· {day(lastEventDate(r))}</span>
+            </a>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Lead story -->
+  {lead && (
+    <section class="wrap mt-10" aria-labelledby="lead">
+      <a href={recordUrl(lead)} class="card card-link group grid gap-6 overflow-hidden p-5 no-underline sm:p-8 md:grid-cols-[1.2fr_1fr]" style={`--v:var(--${lead.data.vertical})`}>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="kicker" style="color:var(--v)">Top story · {VERTICAL[lead.data.vertical].label}</span>
+            <StatusChip status={lead.data.status} />
+          </div>
+          <h2 id="lead" class="display mt-4 text-[1.6rem] sm:text-[2.2rem] group-hover:underline decoration-[3px] underline-offset-[6px]">{lead.data.title}</h2>
+          <p class="mt-4 text-muted">{lead.data.summary}</p>
+        </div>
+        <ol class="space-y-3 self-center">
+          {lead.data.tldr.map((t, i) => (
+            <li class="flex gap-3 rounded-xl bg-card-2 p-3 text-sm leading-relaxed">
+              <span class="display text-xs" style="color:var(--v)">{i + 1}</span><span>{t}</span>
+            </li>
+          ))}
+        </ol>
+      </a>
+    </section>
+  )}
+
+  <!-- Topics -->
+  <section class="wrap mt-12" aria-labelledby="topics">
+    <h2 id="topics" class="display text-2xl">Pick your arena</h2>
+    <div class="mt-5 grid gap-3 sm:grid-cols-3">
+      {VERTICALS.map((v) => (
+        <a href={`/${v}/`} class="card card-link group relative overflow-hidden p-5 no-underline" style={`--v:var(--${v})`}>
+          <div class="absolute -right-6 -top-6 text-[6rem] opacity-15 transition-transform group-hover:rotate-12" aria-hidden="true">{VERTICAL[v].emoji}</div>
+          <p class="display text-xl" style="color:var(--v)">{VERTICAL[v].label}</p>
+          <p class="mt-2 max-w-[16rem] text-sm text-muted">{VERTICAL[v].blurb}</p>
+          <p class="mono mt-4" style="color:var(--v)">{byV[v].length} stories →</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {heating.length > 0 && (
+    <section class="wrap mt-12" aria-labelledby="heating">
+      <div class="flex items-end justify-between gap-3">
+        <h2 id="heating" class="display text-2xl">🔥 Still moving</h2>
+        <a href="/latest/" class="mono text-muted hover:text-text">All updates →</a>
+      </div>
+      <div class="rail mt-5">{heating.map((r) => <RecordCard r={r} />)}</div>
+    </section>
+  )}
+
+  {VERTICALS.map((v) => (
+    <section class="wrap mt-12" aria-labelledby={`h-${v}`}>
+      <div class="flex items-end justify-between gap-3">
+        <h2 id={`h-${v}`} class="display text-2xl"><span aria-hidden="true">{VERTICAL[v].emoji}</span> {VERTICAL[v].label}</h2>
+        <a href={`/${v}/`} class="mono hover:underline" style={`color:var(--${v})`}>See all →</a>
+      </div>
+      <div class="rail mt-5">{byV[v].slice(0, 3).map((r) => <RecordCard r={r} showVertical={false} />)}</div>
+    </section>
+  ))}
+
+  <section class="wrap mt-12" aria-labelledby="explainers">
+    <h2 id="explainers" class="display text-2xl">Explained, simply</h2>
+    <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {explainers.map((x) => (
+        <a href={explainerUrl(x)} class="card card-link p-4 no-underline" style={`--v:var(--${x.data.vertical})`}>
+          <p class="kicker" style="color:var(--v)">{VERTICAL[x.data.vertical].label} · Explainer</p>
+          <p class="mt-2 font-bold leading-snug">{x.data.title}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- The promise -->
+  <section class="wrap mt-14" aria-labelledby="promise">
+    <div class="card grid gap-6 p-6 sm:p-8 md:grid-cols-4">
+      <h2 id="promise" class="display text-2xl md:col-span-1">How we keep it real</h2>
+      <div><p class="font-bold">🧾 Receipts on every line</p><p class="mt-1 text-sm text-muted">No source, no publish. Our build fails if a claim has no source.</p></div>
+      <div><p class="font-bold">⚖️ Both sides, always</p><p class="mt-1 text-sm text-muted">Allegations are labelled and carry the other side's response.</p></div>
+      <div><p class="font-bold">🚫 No verdicts we can't back</p><p class="mt-1 text-sm text-muted">We say "guilty" only when a court or official body has said it. <a class="link" href="/editorial-policy/">Our rules</a>.</p></div>
+    </div>
+  </section>
+</Base>

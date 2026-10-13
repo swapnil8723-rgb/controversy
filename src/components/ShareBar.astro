@@ -1,0 +1,42 @@
+---
+// Native share first (phones), then WhatsApp, X, copy link and the 9:16 story card.
+import { abs } from '../site';
+interface Props { url: string; title: string; storyCard?: string; ogCard?: string }
+const { url, title, storyCard, ogCard } = Astro.props;
+const full = abs(url);
+const text = `${title}, with the receipts:`;
+---
+<div class="share flex flex-wrap gap-2" data-url={full} data-title={title} data-text={text}>
+  <button type="button" class="btn btn-accent share-native" hidden>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" /></svg>
+    Share
+  </button>
+  <a class="btn" href={`https://wa.me/?text=${encodeURIComponent(`${text} ${full}`)}`} target="_blank" rel="noopener">WhatsApp</a>
+  <a class="btn" href={`https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(full)}`} target="_blank" rel="noopener">X</a>
+  <button type="button" class="btn share-copy">Copy link</button>
+  {storyCard && <a class="btn" href={storyCard} download>Story card ↓</a>}
+  {ogCard && !storyCard && <a class="btn" href={ogCard} download>Share image ↓</a>}
+  <span class="share-status sr-only" role="status" aria-live="polite"></span>
+</div>
+<script>
+  for (const box of document.querySelectorAll<HTMLElement>('.share')) {
+    const { url = '', title = '', text = '' } = box.dataset;
+    const native = box.querySelector<HTMLButtonElement>('.share-native');
+    const status = box.querySelector<HTMLElement>('.share-status');
+    if (native && 'share' in navigator) {
+      native.hidden = false;
+      native.addEventListener('click', () => navigator.share({ title, text, url }).catch(() => {}));
+    }
+    const copy = box.querySelector<HTMLButtonElement>('.share-copy');
+    copy?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(url);
+        copy.textContent = 'Copied ✓';
+        if (status) status.textContent = 'Link copied';
+        setTimeout(() => (copy.textContent = 'Copy link'), 2000);
+      } catch {
+        prompt('Copy this link', url);
+      }
+    });
+  }
+</script>

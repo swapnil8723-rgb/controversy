@@ -1,0 +1,10 @@
+---
+import { VERTICAL, type Vertical } from '../lib/taxonomy';
+interface Props { vertical: Vertical; link?: boolean }
+const { vertical, link = true } = Astro.props;
+const v = VERTICAL[vertical];
+const Tag = link ? 'a' : 'span';
+---
+<Tag href={link ? `/${vertical}/` : undefined} class="chip no-underline" style={`color:var(--${vertical});border-color:color-mix(in oklab,var(--${vertical}) 45%,transparent)`}>
+  <span aria-hidden="true">{v.emoji}</span>{v.label}
+</Tag>

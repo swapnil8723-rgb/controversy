@@ -1,0 +1,19 @@
+---
+import Page from '../layouts/Page.astro';
+import { BRAND } from '../site';
+---
+<Page title="Grievance officer" path="/grievance/" kicker="Complaints" description={`How to raise a complaint about content on ${BRAND.name}, and our response times.`}>
+  <p>If you believe something we published is inaccurate, unfair or unlawful, you can complain to our grievance officer.</p>
+  <ul>
+    <li><strong>Grievance officer:</strong> named here before launch</li>
+    <li><strong>Email:</strong> <a href={`mailto:${BRAND.grievanceEmail}`}>{BRAND.grievanceEmail}</a></li>
+  </ul>
+  <h2>What happens next</h2>
+  <ol>
+    <li>We acknowledge your complaint within 24 hours.</li>
+    <li>We re-check the disputed claim against its sources.</li>
+    <li>If it is wrong or one-sided, we correct it or add the response, and log the fix on the page and on our <a href="/corrections/">corrections page</a>.</li>
+    <li>We send you a decision within 15 days.</li>
+  </ol>
+  <p>Please include the page link, the exact sentence you are disputing, and any evidence. Legal notices are passed to our lawyer the same day.</p>
+</Page>

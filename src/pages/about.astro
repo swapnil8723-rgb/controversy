@@ -1,0 +1,18 @@
+---
+import Page from '../layouts/Page.astro';
+import { BRAND } from '../site';
+---
+<Page title={`About ${BRAND.name}`} path="/about/" kicker="About" description={`${BRAND.name} turns the controversies everyone argues about into sourced, neutral timelines: football, cricket and entertainment.`}>
+  <p>Big controversies get covered in dozens of separate articles, each on a different day. If you just want to know <em>what happened, and where it stands now</em>, you end up reading ten of them.</p>
+  <p>{BRAND.name} puts each story on one page: a 30-second summary, a dated timeline, the official decisions, both sides' statements, and a status label telling you whether it is ongoing, in court or resolved. Every line links to its source, so you can check it yourself.</p>
+  <h2>What we cover</h2>
+  <ul>
+    <li><a href="/football/">Football</a>: league and UEFA rulings, financial-rule cases, refereeing and VAR decisions.</li>
+    <li><a href="/cricket/">Cricket</a>: Laws and the spirit of cricket, ICC and board decisions, disciplinary cases.</li>
+    <li><a href="/entertainment/">Entertainment</a>: film, music and streaming disputes backed by court records and on-record statements.</li>
+  </ul>
+  <h2>Who it's for</h2>
+  <p>Fans in India, the UK and Europe, the US, Australia and New Zealand who want the short version fast and the proof one tap away.</p>
+  <h2>Our rules</h2>
+  <p>Read our <a href="/editorial-policy/">editorial policy</a>. In short: no source, no publish; allegations are labelled and answered; we never deliver a verdict that a court or official body has not.</p>
+</Page>

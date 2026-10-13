@@ -1,0 +1,41 @@
+---
+// Static search: Pagefind indexes the built HTML; nothing loads until this page is opened.
+import Base from '../layouts/Base.astro';
+---
+<Base title="Search" description="Search every controversy timeline, person, club and explainer." noindex>
+  <link slot="head" rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <div class="wrap max-w-3xl pt-8">
+    <h1 class="display text-[2rem] sm:text-[2.6rem]">Search the receipts</h1>
+    <p class="mt-2 text-muted">People, clubs, rulings, dates: try “appeal”, “Lord's” or “2024”.</p>
+    <div id="search" class="mt-6"></div>
+    <noscript><p class="mt-6 text-muted">Search needs JavaScript. Browse <a class="link" href="/football/">Football</a>, <a class="link" href="/cricket/">Cricket</a> or <a class="link" href="/entertainment/">Entertainment</a> instead.</p></noscript>
+  </div>
+  <script is:inline src="/pagefind/pagefind-ui.js"></script>
+  <script is:inline>
+    (function () {
+      if (!window.PagefindUI) {
+        document.getElementById('search').innerHTML = '<p class="text-muted">Search is built with the site. Run <code>npm run build</code> and <code>npm run preview</code> to try it locally.</p>';
+        return;
+      }
+      var ui = new PagefindUI({ element: '#search', showSubResults: true, showImages: false, resetStyles: false, translations: { placeholder: 'Search controversies, people, clubs…' } });
+      var q = new URLSearchParams(location.search).get('q');
+      if (q) ui.triggerSearch(q);
+    })();
+  </script>
+  <style is:global>
+    #search {
+      --pagefind-ui-scale: 1;
+      --pagefind-ui-primary: var(--accent);
+      --pagefind-ui-text: var(--text);
+      --pagefind-ui-background: var(--card);
+      --pagefind-ui-border: var(--line);
+      --pagefind-ui-tag: var(--card-2);
+      --pagefind-ui-border-width: 1px;
+      --pagefind-ui-border-radius: 14px;
+      --pagefind-ui-font: var(--font-sans);
+    }
+    #search .pagefind-ui__result-link { color: var(--text); }
+    #search .pagefind-ui__result-excerpt { color: var(--muted); }
+    #search mark { background: color-mix(in oklab, var(--accent) 35%, transparent); color: inherit; }
+  </style>
+</Base>

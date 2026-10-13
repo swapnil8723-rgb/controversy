@@ -1,0 +1,20 @@
+---
+import Page from '../layouts/Page.astro';
+import { BRAND } from '../site';
+---
+<Page title="Contact" path="/contact/" kicker="Get in touch" description={`Report an error, send a source, or contact the ${BRAND.name} team.`}>
+  <p>Spotted an error, a missing response, or a newer development? Tell us. We acknowledge every report within 24 hours.</p>
+  <p><a id="report" class="btn btn-accent no-underline" href={`mailto:${BRAND.email}?subject=Correction%20request`}>Email a correction</a></p>
+  <ul>
+    <li><strong>Corrections and new sources:</strong> <a href={`mailto:${BRAND.email}`}>{BRAND.email}</a></li>
+    <li><strong>Formal complaints:</strong> see our <a href="/grievance/">grievance page</a></li>
+  </ul>
+  <p>Please include the page link, the sentence in question, and a link to your source.</p>
+  <script is:inline>
+    (function () {
+      var about = new URLSearchParams(location.search).get('about');
+      var a = document.getElementById('report');
+      if (about && a && /^\/[a-z0-9\-\/]+$/.test(about)) a.href = a.href.split('?')[0] + '?subject=' + encodeURIComponent('Correction: ' + location.origin + about);
+    })();
+  </script>
+</Page>

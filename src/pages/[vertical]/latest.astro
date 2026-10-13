@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import LatestFeed from '../../components/LatestFeed.astro';
+import { loadAll } from '../../lib/content';
+import { VERTICALS, VERTICAL, type Vertical } from '../../lib/taxonomy';
+import { breadcrumbs } from '../../lib/jsonld';
+
+export function getStaticPaths() {
+  return VERTICALS.map((vertical) => ({ params: { vertical } }));
+}
+const vertical = Astro.params.vertical as Vertical;
+const v = VERTICAL[vertical];
+const { records } = await loadAll();
+const recs = records.filter((r) => r.data.vertical === vertical);
+const crumbs = [{ name: 'Home', url: '/' }, { name: v.label, url: `/${vertical}/` }, { name: 'Latest', url: `/${vertical}/latest/` }];
+---
+<Base title={`Latest ${v.label.toLowerCase()} controversy updates`} description={`New rulings, appeals and statements in ${v.label.toLowerCase()} controversies, newest first, each linked to its source.`} jsonld={[breadcrumbs(crumbs)]}>
+  <div class="wrap pt-6" style={`--v:var(--${vertical})`}>
+    <Breadcrumbs items={crumbs} />
+    <h1 class="display mt-5 text-[2rem] sm:text-[2.8rem]"><span aria-hidden="true">{v.emoji}</span> Latest in <span style="color:var(--v)">{v.label}</span></h1>
+    <p class="mt-3 max-w-2xl text-muted">Every verified development, newest first. <a class="link" href={`/${vertical}/rss.xml`}>Follow by RSS</a>.</p>
+    <LatestFeed records={recs} />
+  </div>
+</Base>

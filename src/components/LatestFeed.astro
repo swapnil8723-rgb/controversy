@@ -1,0 +1,36 @@
+---
+// Auto-built feed of dated developments across records, newest first.
+import StatusChip from './StatusChip.astro';
+import { recordUrl, type Rec } from '../lib/content';
+import { VERTICAL } from '../lib/taxonomy';
+import { day, iso, anchor } from '../lib/format';
+interface Props { records: Rec[]; limit?: number }
+const { records, limit = 60 } = Astro.props;
+const events = records
+  .flatMap((r) => r.data.timeline.map((t, i) => ({ r, t, i })))
+  .sort((a, b) => b.t.date.getTime() - a.t.date.getTime())
+  .slice(0, limit);
+let lastYear = '';
+---
+<ol class="mt-6 space-y-3">
+  {events.map(({ r, t, i }) => {
+    const y = String(t.date.getUTCFullYear());
+    const showYear = y !== lastYear;
+    lastYear = y;
+    return (
+      <>
+        {showYear && <li class="display pt-4 text-lg text-muted" aria-hidden="true">{y}</li>}
+        <li>
+          <a href={`${recordUrl(r)}#${anchor(t.date, i)}`} class="card card-link flex gap-4 p-4 no-underline" style={`--v:var(--${r.data.vertical})`}>
+            <time class="mono w-20 shrink-0 pt-0.5" style="color:var(--v)" datetime={iso(t.date)}>{t.dateLabel ?? day(t.date)}</time>
+            <div class="min-w-0">
+              <p class="font-bold leading-snug">{t.headline}</p>
+              <p class="mt-1 text-sm text-muted">{VERTICAL[r.data.vertical].emoji} {r.data.title}</p>
+              <div class="mt-2"><StatusChip status={r.data.status} /></div>
+            </div>
+          </a>
+        </li>
+      </>
+    );
+  })}
+</ol>

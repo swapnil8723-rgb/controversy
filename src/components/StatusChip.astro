@@ -1,0 +1,9 @@
+---
+import { STATUS, type Status } from '../lib/taxonomy';
+interface Props { status: Status; size?: 'sm' | 'md' }
+const { status, size = 'sm' } = Astro.props;
+const s = STATUS[status];
+---
+<span class:list={['chip', s.cls, size === 'md' && 'text-[0.8rem] px-3']} title={s.long}>
+  <span class="dot" aria-hidden="true"></span>{s.label}
+</span>

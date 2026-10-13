@@ -1,0 +1,17 @@
+---
+// Plain prose page for trust and policy content.
+import Base from './Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { breadcrumbs } from '../lib/jsonld';
+interface Props { title: string; description: string; path: string; kicker?: string; noindex?: boolean }
+const { title, description, path, kicker, noindex } = Astro.props;
+const crumbs = [{ name: 'Home', url: '/' }, { name: title, url: path }];
+---
+<Base title={title} description={description} jsonld={[breadcrumbs(crumbs)]} noindex={noindex}>
+  <div class="wrap max-w-3xl pt-6">
+    <Breadcrumbs items={crumbs} />
+    {kicker && <p class="kicker mt-6">{kicker}</p>}
+    <h1 class="display mt-3 text-[2rem] sm:text-[2.6rem]">{title}</h1>
+    <div class="prose-r mt-6"><slot /></div>
+  </div>
+</Base>

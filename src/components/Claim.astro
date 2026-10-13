@@ -1,0 +1,25 @@
+---
+// One sourced sentence. Allegations and responses are labelled and attributed;
+// "reported" claims say they rest on news reporting.
+import SourceChip from './SourceChip.astro';
+import type { ClaimKind, Tier } from '../lib/taxonomy';
+interface Src { id: string; name: string; tier: Tier }
+interface Props { text: string; kind: ClaimKind; by?: string; cite: string[]; sources: Src[] }
+const { text, kind, by, cite, sources } = Astro.props;
+const idx = new Map(sources.map((s, i) => [s.id, i + 1]));
+const badge =
+  kind === 'allegation' ? { t: `Claim by ${by}`, c: 'color:var(--st-disputed);border-color:color-mix(in oklab,var(--st-disputed) 45%,transparent)' }
+  : kind === 'response' ? { t: `Response: ${by}`, c: 'color:var(--st-court);border-color:color-mix(in oklab,var(--st-court) 45%,transparent)' }
+  : kind === 'reported' ? { t: 'Reported', c: 'color:var(--muted)' }
+  : null;
+---
+<div class="claim">
+  {badge && <span class="chip mb-1.5 max-w-full !whitespace-normal !py-1 leading-snug" style={badge.c}>{badge.t}</span>}
+  <p>{text}</p>
+  <div class="mt-2 flex flex-wrap gap-1.5">
+    {cite.map((id) => {
+      const s = sources.find((x) => x.id === id)!;
+      return <SourceChip id={id} n={idx.get(id)!} name={s.name} tier={s.tier} />;
+    })}
+  </div>
+</div>

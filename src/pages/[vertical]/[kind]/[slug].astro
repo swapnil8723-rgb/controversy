@@ -1,0 +1,63 @@
+---
+// Entity hub: everything about one person, club, team or organisation. Every record that
+// names the entity links here, so the hub collects internal links and is the page meant
+// to rank for "[name] controversies". Hubs with a single record stay noindex until they grow.
+import Base from '../../../layouts/Base.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import RecordCard from '../../../components/RecordCard.astro';
+import LatestFeed from '../../../components/LatestFeed.astro';
+import { loadAll, entityUrl, recordsOfEntity, type Ent } from '../../../lib/content';
+import { VERTICAL, KIND_SEGMENT } from '../../../lib/taxonomy';
+import { breadcrumbs } from '../../../lib/jsonld';
+import { abs } from '../../../site';
+
+export async function getStaticPaths() {
+  const { entities } = await loadAll();
+  const out = [];
+  for (const e of entities) {
+    if ((await recordsOfEntity(e)).length === 0) continue; // no orphan hubs
+    out.push({ params: { vertical: e.data.vertical, kind: KIND_SEGMENT[e.data.kind], slug: e.id }, props: { e } });
+  }
+  return out;
+}
+const { e } = Astro.props as { e: Ent };
+const d = e.data;
+const v = VERTICAL[d.vertical];
+const recs = await recordsOfEntity(e);
+const thin = recs.length < 2;
+const url = entityUrl(e);
+const crumbs = [{ name: 'Home', url: '/' }, { name: v.label, url: `/${d.vertical}/` }, { name: d.name, url }];
+const type = d.kind === 'person' ? 'Person' : d.kind === 'club' || d.kind === 'team' ? 'SportsTeam' : 'Organization';
+const title = `${d.name} controversies: full timeline and latest`;
+const description = `Every ${d.name} controversy we track, with dated timelines, official decisions and sources. ${recs.length} ${recs.length === 1 ? 'story' : 'stories'}.`;
+const ld = [
+  breadcrumbs(crumbs),
+  { '@type': 'ProfilePage', url: abs(url), name: title, mainEntity: { '@type': type, name: d.name, description: d.bio, sameAs: d.sameAs } },
+];
+const host = (u: string) => new URL(u).hostname.replace(/^www\./, '').replace(/^en\./, '');
+---
+<Base title={title} description={description} jsonld={ld} noindex={thin}>
+  <div class="wrap pt-6" style={`--v:var(--${d.vertical})`} data-pagefind-body>
+    <Breadcrumbs items={crumbs} />
+    <header class="mt-6 max-w-3xl">
+      <p class="kicker" style="color:var(--v)">{v.emoji} {d.role}{d.country ? ` · ${d.country}` : ''}</p>
+      <h1 class="display mt-3 text-[2rem] sm:text-[3rem]">{d.name}</h1>
+      <p class="mt-4 text-[1.05rem] text-muted">{d.bio}</p>
+      {d.sameAs.length > 0 && (
+        <p class="mono mt-4 flex flex-wrap gap-2" data-pagefind-ignore>
+          {d.sameAs.map((u) => <a class="chip no-underline hover:border-muted" href={u} target="_blank" rel="noopener nofollow">{host(u)} ↗</a>)}
+        </p>
+      )}
+    </header>
+
+    <section class="mt-10" aria-labelledby="stories">
+      <h2 id="stories" class="display text-xl">{d.name} controversies <span class="text-muted">({recs.length})</span></h2>
+      <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{recs.map((r) => <RecordCard r={r} showVertical={false} />)}</div>
+    </section>
+
+    <section class="mt-12" aria-labelledby="tl" data-pagefind-ignore>
+      <h2 id="tl" class="display text-xl">Combined timeline</h2>
+      <LatestFeed records={recs} />
+    </section>
+  </div>
+</Base>

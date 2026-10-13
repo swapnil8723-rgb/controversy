@@ -1,0 +1,87 @@
+---
+// Story mode: the record as swipeable full-screen cards (cover, TL;DR, each dated event,
+// where it stands). Built from the same verified data as the page; it advances only
+// when the reader taps or swipes, never on a timer.
+import { STATUS, VERTICAL, type Status, type Vertical } from '../lib/taxonomy';
+interface Slide { kicker: string; title: string; body?: string }
+interface Props { vertical: Vertical; status: Status; title: string; tldr: string[]; events: { date: string; headline: string; text: string }[]; standing: string; brand: string }
+const { vertical, status, title, tldr, events, standing, brand } = Astro.props;
+const slides: Slide[] = [
+  { kicker: `${VERTICAL[vertical].emoji} ${VERTICAL[vertical].label} · ${STATUS[status].label}`, title },
+  ...tldr.map((t, i) => ({ kicker: `TL;DR ${i + 1}/3`, title: t })),
+  ...events.map((e) => ({ kicker: e.date, title: e.headline, body: e.text })),
+  { kicker: 'Where it stands', title: standing, body: `Full timeline and every source on ${brand}.` },
+];
+---
+<button type="button" class="btn story-open" data-story-open>
+  <span aria-hidden="true">▶</span> Story mode
+</button>
+<dialog class="story" aria-label="Story mode" style={`--v:var(--${vertical})`}>
+  <div class="story-bars" aria-hidden="true">{slides.map(() => <span><i></i></span>)}</div>
+  <button type="button" class="story-close" aria-label="Close story mode">✕</button>
+  <div class="story-track">
+    {slides.map((s, i) => (
+      <section class="story-slide" aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`}>
+        <p class="kicker" style="color:var(--v)">{s.kicker}</p>
+        <p class:list={['display mt-4', i === 0 ? 'text-[2rem]' : 'text-[1.45rem]']}>{s.title}</p>
+        {s.body && <p class="mt-5 text-[1.02rem] text-muted">{s.body}</p>}
+      </section>
+    ))}
+  </div>
+  <div class="story-nav">
+    <button type="button" class="story-prev" aria-label="Previous">‹</button>
+    <span class="mono text-muted story-count"></span>
+    <button type="button" class="story-next" aria-label="Next">›</button>
+  </div>
+</dialog>
+
+<style>
+  .story { width: 100%; max-width: 28rem; height: 100dvh; max-height: 100dvh; margin: auto; padding: 0; border: 0; background: var(--bg); color: var(--text); overflow: hidden; }
+  @media (min-width: 640px) { .story { height: min(52rem, 92dvh); border-radius: 1.5rem; border: 1px solid var(--line); } }
+  .story::backdrop { background: rgb(0 0 0 / 0.75); }
+  .story[open] { display: flex; flex-direction: column; }
+  .story-bars { display: flex; gap: 4px; padding: 14px 14px 0; }
+  .story-bars span { flex: 1; height: 3px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .story-bars i { display: block; height: 100%; width: 0; background: var(--v); }
+  .story-bars span.done i { width: 100%; }
+  .story-close { position: absolute; top: 26px; right: 12px; width: 44px; height: 44px; border-radius: 99px; font-size: 1.1rem; color: var(--muted); }
+  .story-track { flex: 1; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .story-track::-webkit-scrollbar { display: none; }
+  .story-slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center; padding: 2rem 1.75rem; background: radial-gradient(120% 60% at 0% 0%, color-mix(in oklab, var(--v) 18%, transparent), transparent 60%); }
+  .story-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 12px calc(12px + env(safe-area-inset-bottom)); }
+  .story-nav button { width: 52px; height: 52px; border-radius: 99px; border: 1px solid var(--line); background: var(--card); font-size: 1.6rem; line-height: 1; }
+</style>
+
+<script>
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-story-open]')) {
+    const dlg = btn.nextElementSibling as HTMLDialogElement;
+    const track = dlg.querySelector<HTMLElement>('.story-track')!;
+    const bars = [...dlg.querySelectorAll<HTMLElement>('.story-bars span')];
+    const count = dlg.querySelector<HTMLElement>('.story-count')!;
+    const n = bars.length;
+    const current = () => Math.round(track.scrollLeft / track.clientWidth);
+    const paint = () => {
+      const i = current();
+      bars.forEach((b, j) => b.classList.toggle('done', j <= i));
+      count.textContent = `${i + 1} / ${n}`;
+    };
+    const go = (i: number) => {
+      if (i >= n) return dlg.close();
+      track.scrollTo({ left: Math.max(0, i) * track.clientWidth, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    };
+    btn.addEventListener('click', () => { dlg.showModal(); track.scrollLeft = 0; paint(); });
+    track.addEventListener('scroll', () => requestAnimationFrame(paint), { passive: true });
+    dlg.querySelector('.story-next')!.addEventListener('click', () => go(current() + 1));
+    dlg.querySelector('.story-prev')!.addEventListener('click', () => go(current() - 1));
+    dlg.querySelector('.story-close')!.addEventListener('click', () => dlg.close());
+    track.addEventListener('click', (e) => {
+      const x = (e as MouseEvent).clientX - track.getBoundingClientRect().left;
+      go(current() + (x < track.clientWidth * 0.3 ? -1 : 1));
+    });
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') go(current() + 1);
+      if (e.key === 'ArrowLeft') go(current() - 1);
+    });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  }
+</script>

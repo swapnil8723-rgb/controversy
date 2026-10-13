@@ -1,0 +1,31 @@
+name: CI
+
+# Nothing publishes unless every gate passes: content schema (in the build), editorial
+# gates, source links, and the built-output tests. Add a deploy step once hosting is chosen.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * *' # daily: catches open cases that go stale and sources that disappear
+
+jobs:
+  verify-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Editorial gates
+        run: npm run verify
+      - name: Source links
+        run: npm run verify:links
+      - name: Build (schema gate, share cards, search index)
+        run: npm run build
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+      - name: Built-output tests
+        run: npm test

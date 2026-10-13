@@ -1,0 +1,26 @@
+---
+// One native popover per source: outlet, tier, headline, dates, original + archived link.
+import { TIER, type Tier } from '../lib/taxonomy';
+import { day } from '../lib/format';
+interface Src { id: string; name: string; title: string; url: string; archiveUrl?: string; published?: Date; accessed: Date; tier: Tier }
+interface Props { sources: Src[] }
+const { sources } = Astro.props;
+---
+{sources.map((s, i) => (
+  <div id={`src-${s.id}`} popover class="sheet">
+    <div class="flex items-start justify-between gap-3">
+      <p class="kicker">Source {i + 1} · {TIER[s.tier].label}</p>
+      <button type="button" popovertarget={`src-${s.id}`} popovertargetaction="hide" class="btn !min-h-9 !px-3 text-sm" aria-label="Close">✕</button>
+    </div>
+    <p class="mt-2 font-semibold">{s.name}</p>
+    <p class="mt-1 text-muted">{s.title}</p>
+    <p class="mono mt-3 text-muted">
+      {s.published && <>Published {day(s.published)} · </>}Checked {day(s.accessed)}
+    </p>
+    <p class="mt-1 text-sm text-muted">{TIER[s.tier].hint}</p>
+    <div class="mt-4 flex flex-wrap gap-2">
+      <a class="btn btn-accent" href={s.url} target="_blank" rel="noopener nofollow">Open source ↗</a>
+      {s.archiveUrl && <a class="btn" href={s.archiveUrl} target="_blank" rel="noopener nofollow">Archived copy ↗</a>}
+    </div>
+  </div>
+))}

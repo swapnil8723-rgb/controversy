@@ -1,0 +1,20 @@
+---
+import StatusChip from './StatusChip.astro';
+import { recordUrl, heatOf, lastEventDate, BUILD_TIME, type Rec } from '../lib/content';
+import { VERTICAL } from '../lib/taxonomy';
+import { ago } from '../lib/format';
+interface Props { r: Rec; compact?: boolean; showVertical?: boolean }
+const { r, compact = false, showVertical = true } = Astro.props;
+const heat = heatOf(r);
+const v = r.data.vertical;
+---
+<a href={recordUrl(r)} class="card card-link group flex h-full flex-col p-4 no-underline" style={`--v:var(--${v})`}>
+  <div class="flex flex-wrap items-center gap-1.5">
+    {showVertical && <span class="mono" style={`color:var(--${v})`}>{VERTICAL[v].emoji} {VERTICAL[v].label}</span>}
+    <StatusChip status={r.data.status} />
+    {heat === 'hot' && <span class="chip" style="color:var(--hot);border-color:color-mix(in oklab,var(--hot) 45%,transparent)">🔥 Heating up</span>}
+  </div>
+  <h3 class="mt-3 text-[1.05rem] font-bold leading-snug group-hover:underline decoration-2 underline-offset-4">{r.data.title}</h3>
+  {!compact && <p class="mt-2 line-clamp-3 text-sm text-muted">{r.data.tldr[0]}</p>}
+  <p class="mono mt-auto pt-3 text-muted">Latest: {ago(lastEventDate(r), BUILD_TIME)} · {r.data.sources.length} sources</p>
+</a>

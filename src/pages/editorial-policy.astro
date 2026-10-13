@@ -1,0 +1,52 @@
+---
+import Page from '../layouts/Page.astro';
+import { BRAND } from '../site';
+import { VERDICT_WORDS } from '../lib/taxonomy';
+---
+<Page title="Editorial policy" path="/editorial-policy/" kicker="How we work" description={`How ${BRAND.name} sources, labels and corrects every controversy timeline: source tiers, allegations, responses, the heat score and what we never publish.`}>
+  <p>{BRAND.name} publishes structured timelines of public controversies in football, cricket and entertainment. Our job is to show what happened, what is established, what is only alleged, and where things stand, with a source for every line.</p>
+
+  <h2 id="sources">Every claim has a source</h2>
+  <p>Each sentence in a timeline cites at least one source, and a page without them cannot be published: our build checks every claim automatically. We grade sources in four tiers and show the tier on every source chip:</p>
+  <ul>
+    <li><strong>Official</strong>: a league, board, governing body or regulator speaking for itself.</li>
+    <li><strong>Court</strong>: a court, tribunal or arbitration record.</li>
+    <li><strong>On record</strong>: a named party speaking publicly in their own words.</li>
+    <li><strong>Reported</strong>: reporting by an established news organisation.</li>
+  </ul>
+  <p>Two sources are a minimum, never the test. A claim we label as a <strong>fact</strong> must rest on an official, court or on-record source. Where we rely on news reporting alone, the claim is labelled <strong>Reported</strong>.</p>
+
+  <h2 id="allegations">Allegations and the other side</h2>
+  <ul>
+    <li>An <strong>allegation</strong> is always attributed to the person or body making it, and labelled as a claim.</li>
+    <li>Any page with an allegation must carry the other side's response, or a dated note that we looked for one and found none. The build fails otherwise.</li>
+    <li>We never state a verdict a court or official body has not reached. Words such as {VERDICT_WORDS.slice(0, 5).map((w) => `“${w}”`).join(', ')} are blocked from headlines unless a ruling supports them.</li>
+  </ul>
+
+  <h2 id="scope">What we don't publish</h2>
+  <ul>
+    <li>Rumours, unverified private-life claims, or claims about minors.</li>
+    <li>Pending criminal accusations beyond what court records show.</li>
+    <li>Sexual allegations without a court record.</li>
+    <li>Communal or religious framing, and partisan politics.</li>
+    <li>Mass-produced or rewritten news. Every page is checked and signed off by a named editor.</li>
+  </ul>
+
+  <h2 id="status">Status labels</h2>
+  <p><strong>Ongoing</strong> means an official process is pending. <strong>In court</strong> means a court, tribunal or appeal body is still deciding. <strong>Resolved</strong> means a final decision, settlement or ruling closed the official process. <strong>Disputed</strong> means the facts are on record but the parties still disagree about them. <strong>Not enough info</strong> means we cannot say where it stands. Status is always shown as words, never colour alone.</p>
+
+  <h2 id="heat">How the heat score works</h2>
+  <p>The heat badge is calculated, not an opinion. <strong>Heating up</strong>: the story's latest dated development is within the last 30 days. <strong>Simmering</strong>: within 180 days, or the case is still open (ongoing or in court). <strong>Cooled off</strong>: everything else. It is recalculated every time the site is built.</p>
+
+  <h2 id="freshness">Keeping pages current</h2>
+  <p>Every page shows when it was last verified. Pages about open cases are re-checked at least every 14 days; our publishing checks block an open-case page that has not been re-verified in that time. We change the “updated” date only when facts change.</p>
+
+  <h2 id="ai">Use of AI</h2>
+  <p>We may use AI tools to help gather and organise sources. Every sentence must trace back to a stored source, and a human editor reads the whole page against those sources before it is published. AI never publishes anything.</p>
+
+  <h2 id="corrections">Corrections</h2>
+  <p>Report an error through our <a href="/contact/">contact page</a>. We acknowledge reports within 24 hours, re-check the claim against its source, and fix it or add the missing response. Every fix is dated on the page and on our <a href="/corrections/">corrections log</a>. Legal notices go to our lawyer the same day; we never delete a page to make a complaint disappear.</p>
+
+  <h2 id="images">Images</h2>
+  <p>We use only original graphics or images we are licensed to use.</p>
+</Page>
