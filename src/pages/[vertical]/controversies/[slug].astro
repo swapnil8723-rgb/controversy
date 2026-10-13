@@ -225,7 +225,7 @@ const ld = [
             Spotted something wrong or one-sided? <a class="link" href={`/contact/?about=${encodeURIComponent(url)}`}>Tell us</a>. We acknowledge reports within 24 hours and log every fix on the <a class="link" href="/corrections/">corrections page</a>.
           </p>
           <p class="mono mt-3 text-muted">
-            Published {day(d.published)} · Updated {day(d.updated)} · Reviewed by {d.reviewedBy}
+            Published {day(d.published)} · Updated {day(d.updated)} · {d.reviewedBy.startsWith('Draft') ? 'Editorial review pending' : d.reviewedBy.startsWith('Auto') ? d.reviewedBy : `Reviewed by ${d.reviewedBy}`}
           </p>
         </section>
       </div>

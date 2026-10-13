@@ -1,0 +1,76 @@
+name: daily-update
+
+# Free daily auto-update: archive quiet stories, update live ones, draft new ones from RSS
+# + Gemini's free tier, then verify, build and test before committing. If any gate fails,
+# nothing is committed, so a bad draft can never reach the site.
+# Cost: ~10 min/day of GitHub Actions (free: unlimited on public repos, 2,000 min/month
+# on private) and Gemini free-tier calls (capped at 40 a run).
+#
+# Setup: Settings > Secrets and variables > Actions
+#   secret   GEMINI_API_KEY   free key from https://aistudio.google.com/apikey
+#   secret   DEPLOY_HOOK_URL  optional: Cloudflare Pages / Vercel deploy hook, to refresh
+#                             "NEW" badges on days with no content change
+#   variable AUTO_PUBLISH     low (default) | all | none
+#   variable SITE_URL         https://lorecheck.co
+on:
+  schedule:
+    - cron: '30 0 * * *' # 06:00 IST / 00:30 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: daily-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Find and write stories
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          AUTO_PUBLISH: ${{ vars.AUTO_PUBLISH || 'low' }}
+        run: node scripts/pipeline/run.ts
+
+      - name: Editorial gates
+        run: npm run verify
+
+      - name: Build
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://lorecheck.co' }}
+        run: npm run build
+
+      - name: Tests
+        run: npm test
+
+      - name: Commit and push
+        id: commit
+        run: |
+          git config user.name "lorecheck-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A src/content archive drafts data
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No content changes today."
+          else
+            git commit -m "Daily update $(date -u +%F)"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Rebuild site anyway (fresh badges)
+        if: steps.commit.outputs.changed == 'false'
+        env:
+          DEPLOY_HOOK_URL: ${{ secrets.DEPLOY_HOOK_URL }}
+        run: |
+          if [ -n "$DEPLOY_HOOK_URL" ]; then curl -fsS -X POST "$DEPLOY_HOOK_URL" > /dev/null && echo "Deploy hook called."; else echo "No deploy hook set."; fi

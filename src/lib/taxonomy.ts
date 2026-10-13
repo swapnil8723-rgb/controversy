@@ -55,19 +55,19 @@ export type Region = (typeof REGIONS)[number];
 export const REGION: Record<Region, { label: string; flag: string; seo: string; h1: string }> = {
   india: {
     label: 'India',
-    flag: '🇮🇳',
+    flag: '🌏',
     seo: "India's latest controversies, fact-checked: cricket, Bollywood, creators, tech and AI rows from the last 30 days, with every source linked.",
     h1: 'India controversies',
   },
   america: {
     label: 'America',
-    flag: '🇺🇸',
+    flag: '🌎',
     seo: 'The latest US and Americas controversies, fact-checked: celebrity lawsuits, AI and tech fights, gaming and sports rows from the last 30 days.',
     h1: 'America controversies',
   },
   europe: {
     label: 'Europe',
-    flag: '🇪🇺',
+    flag: '🌍',
     seo: "Europe's latest controversies, fact-checked: football rulings, UK and EU tech regulation, music and gaming disputes from the last 30 days.",
     h1: 'Europe controversies',
   },

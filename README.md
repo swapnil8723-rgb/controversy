@@ -1,6 +1,6 @@
 # Lorecheck: the full lore, fact-checked (lorecheck.co)
 
-Sourced, neutral timelines of **this month's** football, cricket and entertainment controversies for a Gen Z audience in India, the US, the UK and Europe, Australia and New Zealand. Built from `Plan v1 (superseded).docx` (the "Controversy Tracker: Phase 1 Plan").
+Sourced, neutral timelines of **this month's** controversies in six categories (Football, Cricket, Entertainment, Tech & AI, Gaming, Creators) across three regions (India, America, Europe) for a Gen Z audience in India, the US, the UK and Europe, Australia and New Zealand. Built from `Plan v1 (superseded).docx` (the "Controversy Tracker: Phase 1 Plan").
 
 Astro 7.3 (static) + Tailwind 4, Pagefind search, share cards rendered at build with Satori. No database and no server.
 
@@ -24,9 +24,30 @@ The brand and origin live in `src/site.ts` (default `https://lorecheck.co`; over
 
 The site covers controversies with a verified development in the last 30 days. `npm run verify` warns when a story has had no new development for 30 days, or when its `next` date has passed. Quiet stories move to `archive/` (kept, not published) and come back if something new happens.
 
+## Daily auto-update (free)
+
+`.github/workflows/daily.yml` runs every day at 06:00 IST on GitHub Actions:
+
+1. Archives stories with no development for 30 days and nothing scheduled in the next 30; clears passed dates.
+2. Reads free publisher RSS feeds (`scripts/pipeline/sources.ts`) for dispute headlines from the last 36 hours.
+3. Uses Gemini's free tier to group headlines, match existing stories and score risk and reader interest.
+4. Adds new developments to existing stories, and drafts new ones from at least two outlets' article text.
+5. Checks every draft (`scripts/pipeline/validate.ts`), then runs `verify`, the build and the tests. If any gate fails, nothing is committed.
+
+Publishing policy (`AUTO_PUBLISH` variable): `low` (default) publishes low-risk drafts and parks medium-risk ones in `drafts/` for a human; `all` publishes both; `none` parks everything. Auto-drafted pages say so on the page.
+
+Setup in GitHub > Settings > Secrets and variables > Actions:
+- Secret `GEMINI_API_KEY`: a free key from https://aistudio.google.com/apikey (use a free-tier key, not a billed one).
+- Optional secret `DEPLOY_HOOK_URL`: your host's deploy hook, so "NEW" badges refresh on quiet days.
+- Optional variables `AUTO_PUBLISH`, `SITE_URL`.
+
+Hosting (free): connect the repo to Cloudflare Pages (build `npm run build`, output `dist`, Node 24). Every daily commit redeploys the site.
+
+Run it locally: `node scripts/pipeline/run.ts` (without a key it only does the freshness step).
+
 ## Content
 
-- `src/content/records/<vertical>/<slug>.md`: one controversy per file. All facts sit in frontmatter: `tldr`, `status`, `timeline[].claims[]`, `responses`, `sources[]`.
+- `src/content/records/<category>/<slug>.md`: one controversy per file, with `regions` (india, america, europe). All facts sit in frontmatter: `tldr`, `status`, `timeline[].claims[]`, `responses`, `sources[]`.
 - `src/content/entities/*.md`: people, clubs and organisations. Hub pages are generated from the records that reference them; a hub with fewer than two records is `noindex` and stays out of the sitemap.
 - `src/content/explainers/*.md`: "why / what is" pages with a short answer box.
 

@@ -1,12 +1,17 @@
 ---
 // Freshness pill: how long ago the latest verified development happened.
-import { ageDays, shortAgo, type Rec } from '../lib/content';
+import { ageDays, shortAgo, daysUntilNext, type Rec } from '../lib/content';
 interface Props { r: Rec }
 const { r } = Astro.props;
 const days = ageDays(r);
 const isNew = days <= 3;
+const soon = daysUntilNext(r);
+// A quiet story with a date coming up is shown by its next date, not its age.
+const showNext = !isNew && days > 14 && soon !== undefined && soon <= 30;
 ---
-{isNew ? (
+{showNext ? (
+  <span class="chip" style="color:var(--link);border-color:color-mix(in oklab,var(--link) 40%,transparent)">⏭ {soon === 0 ? 'today' : soon === 1 ? 'tomorrow' : `in ${soon}d`}</span>
+) : isNew ? (
   <span class="chip" style="color:var(--hot);border-color:color-mix(in oklab,var(--hot) 45%,transparent);background:color-mix(in oklab,var(--hot) 10%,transparent)">
     <span class="dot pulse" aria-hidden="true"></span>NEW · {shortAgo(days)}
   </span>

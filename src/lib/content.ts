@@ -52,6 +52,17 @@ export const ageDays = (r: Rec, now = BUILD_TIME) => Math.max(0, Math.floor((now
 export const FRESH_DAYS = 30;
 export const isNew = (r: Rec) => ageDays(r) <= 3;
 
+/** Days until the record's next known date (hearing, deadline), or undefined if none is upcoming. */
+export function daysUntilNext(r: Rec, now = BUILD_TIME) {
+  if (!r.data.next) return undefined;
+  const today = new Date(now.toISOString().slice(0, 10)).getTime();
+  const d = Math.round((r.data.next.date.getTime() - today) / 864e5);
+  return d >= 0 ? d : undefined;
+}
+
+/** Live = something happened in the last 30 days, or something is scheduled in the next 30. */
+export const isLive = (r: Rec) => ageDays(r) <= FRESH_DAYS || (daysUntilNext(r) ?? Infinity) <= FRESH_DAYS;
+
 /** Short relative age for pills: "today", "2d ago", "3w ago". */
 export function shortAgo(days: number) {
   if (days < 1) return 'today';

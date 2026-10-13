@@ -61,7 +61,8 @@ for (const r of records) {
   if (toDate(d.updated) < toDate(d.published)) fail(r, 'updated is earlier than published');
   const latest = Math.max(...(d.timeline ?? []).map((t: { date: unknown }) => toDate(t.date).getTime()));
   const quiet = Math.floor((now.getTime() - latest) / 864e5);
-  if (quiet > FRESH_DAYS) warn(r, `no new development for ${quiet} days; move it to archive/ unless something new happened`);
+  const nextIn = d.next ? Math.round((toDate(d.next.date).getTime() - now.getTime()) / 864e5) : -1;
+  if (quiet > FRESH_DAYS && !(nextIn >= 0 && nextIn <= FRESH_DAYS)) warn(r, `no new development for ${quiet} days; move it to archive/ unless something new happened`);
   if (d.next && toDate(d.next.date) < new Date(now.toISOString().slice(0, 10))) warn(r, `"next" date ${String(d.next.date).slice(0, 10)} has passed; update the story`);
   for (const e of d.entities ?? []) if (!entityIds.has(e)) fail(r, `unknown entity "${e}"`);
   for (const x of d.related ?? []) if (!recordSlugs.has(x)) fail(r, `unknown related record "${x}"`);

@@ -3,12 +3,12 @@ import Base from '../layouts/Base.astro';
 import RecordCard from '../components/RecordCard.astro';
 import StoryRail from '../components/StoryRail.astro';
 import NextUp from '../components/NextUp.astro';
-import { loadAll, explainerUrl, ageDays, FRESH_DAYS } from '../lib/content';
+import { loadAll, explainerUrl, isLive, FRESH_DAYS } from '../lib/content';
 import { VERTICALS, VERTICAL, REGIONS, REGION } from '../lib/taxonomy';
 import { BRAND } from '../site';
 
 const { records, explainers } = await loadAll();
-const fresh = records.filter((r) => ageDays(r) <= FRESH_DAYS);
+const fresh = records.filter(isLive);
 const [lead, ...rest] = fresh;
 const counts = Object.fromEntries(VERTICALS.map((v) => [v, fresh.filter((r) => r.data.vertical === v).length]));
 const topics = VERTICALS.filter((v) => counts[v] > 0);
@@ -28,7 +28,7 @@ const sources = fresh.reduce((n, r) => n + r.data.sources.length, 0);
     <!-- Region + topic filters: one feed, filtered in place (no thin filter URLs). The
          region choice is remembered on this device. -->
     <div class="no-bar -mx-1 mt-6 flex gap-2 overflow-x-auto px-1" role="group" aria-label="Filter by region" data-group="region">
-      <button type="button" class="chip !min-h-10 !px-4 !text-[0.85rem] cursor-pointer" aria-pressed="true" data-val="all">🌍 Everywhere</button>
+      <button type="button" class="chip !min-h-10 !px-4 !text-[0.85rem] cursor-pointer" aria-pressed="true" data-val="all">🌐 Everywhere</button>
       {REGIONS.map((g) => <button type="button" class="chip !min-h-10 !px-4 !text-[0.85rem] cursor-pointer" aria-pressed="false" data-val={g}>{REGION[g].flag} {REGION[g].label}</button>)}
     </div>
     <div class="no-bar -mx-1 mt-2 flex gap-2 overflow-x-auto px-1" role="group" aria-label="Filter by topic" data-group="topic">

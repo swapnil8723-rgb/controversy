@@ -4,9 +4,9 @@
 const path = Astro.url.pathname;
 const items = [
   { href: '/', label: 'Home', icon: '🏠', on: path === '/' },
-  { href: '/india/', label: 'India', icon: '🇮🇳', on: path.startsWith('/india/') },
-  { href: '/america/', label: 'America', icon: '🇺🇸', on: path.startsWith('/america/') },
-  { href: '/europe/', label: 'Europe', icon: '🇪🇺', on: path.startsWith('/europe/') },
+  { href: '/india/', label: 'India', icon: '🌏', on: path.startsWith('/india/') },
+  { href: '/america/', label: 'America', icon: '🌎', on: path.startsWith('/america/') },
+  { href: '/europe/', label: 'Europe', icon: '🌍', on: path.startsWith('/europe/') },
   { href: '/search/', label: 'Search', icon: '🔎', on: path.startsWith('/search/') },
 ];
 ---

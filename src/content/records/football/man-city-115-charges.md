@@ -57,6 +57,20 @@ sources:
     published: 2026-09-25
     accessed: 2026-10-13
     tier: major-outlet
+  - id: fa-statement
+    name: "The FA"
+    title: "FA statement on Manchester City"
+    url: "https://www.thefa.com/news/2026/oct/02/fa-statement-on-manchester-city-20260210"
+    published: 2026-10-02
+    accessed: 2026-10-13
+    tier: official
+  - id: sky-uefa
+    name: "Sky Sports"
+    title: "Man City charges: UEFA monitoring Premier League club's case as it considers potential action"
+    url: "https://www.skysports.com/football/news/13595795/man-city-charges-uefa-monitoring-premier-league-clubs-case-as-it-considers-potential-action"
+    published: 2026-10-06
+    accessed: 2026-10-13
+    tier: major-outlet
 timeline:
   - date: 2018-12-01
     dateLabel: "Dec 2018"
@@ -111,6 +125,18 @@ timeline:
       - text: "City appealed to the Chair of the Judicial Panel. The league said the Appeal Board hearing will remain private and confidential until publication of the outcome is permitted."
         kind: fact
         cite: [pl-appeal]
+  - date: 2026-10-02
+    headline: "The FA responds"
+    claims:
+      - text: "The FA said the decision has major implications for the integrity of the game and that it will act where appropriate, but will not comment further while proceedings continue."
+        kind: fact
+        cite: [fa-statement]
+  - date: 2026-10-06
+    headline: "UEFA is watching"
+    claims:
+      - text: "UEFA is monitoring the case and will wait for the Premier League process to finish before deciding whether to take any action of its own."
+        kind: reported
+        cite: [sky-uefa]
 responses:
   - text: "City said it lodged a 'comprehensive appeal' at 7pm on 1 October 2026, that the commission's opinion 'contains clear material errors, of law, principle and fact', and that 'the club is innocent of the accusations made by the Premier League'."
     kind: response
