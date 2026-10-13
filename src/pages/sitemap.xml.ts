@@ -1,6 +1,6 @@
 // Own sitemap so lastmod is the real "facts changed" date and thin hubs stay out.
 import { loadAll, recordUrl, entityUrl, explainerUrl, recordsOfEntity, BUILD_TIME } from '../lib/content';
-import { VERTICALS } from '../lib/taxonomy';
+import { VERTICALS, REGIONS } from '../lib/taxonomy';
 import { abs } from '../site';
 import { iso } from '../lib/format';
 
@@ -15,6 +15,10 @@ export async function GET() {
     const vr = records.filter((r) => r.data.vertical === v).map((r) => r.data.updated);
     if (!vr.length) continue;
     urls.push({ loc: `/${v}/`, lastmod: newest(vr) }, { loc: `/${v}/latest/`, lastmod: newest(vr) });
+  }
+  for (const g of REGIONS) {
+    const gr = records.filter((r) => r.data.regions.includes(g)).map((r) => r.data.updated);
+    if (gr.length) urls.push({ loc: `/${g}/`, lastmod: newest(gr) });
   }
   for (const r of records) urls.push({ loc: recordUrl(r), lastmod: r.data.updated });
   for (const x of explainers) urls.push({ loc: explainerUrl(x), lastmod: x.data.updated });

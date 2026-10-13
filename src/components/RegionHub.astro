@@ -1,0 +1,73 @@
+---
+// Region hub: every fresh story that matters in one region, filterable by topic.
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import RecordCard from './RecordCard.astro';
+import StoryRail from './StoryRail.astro';
+import NextUp from './NextUp.astro';
+import { loadAll, recordUrl } from '../lib/content';
+import { VERTICALS, VERTICAL, REGION, type Region } from '../lib/taxonomy';
+import { breadcrumbs } from '../lib/jsonld';
+import { abs } from '../site';
+
+interface Props { region: Region }
+const { region } = Astro.props;
+const g = REGION[region];
+const { records } = await loadAll();
+const recs = records.filter((r) => r.data.regions.includes(region));
+const [lead, ...rest] = recs;
+const topics = VERTICALS.filter((v) => recs.some((r) => r.data.vertical === v));
+const crumbs = [{ name: 'Home', url: '/' }, { name: g.label, url: `/${region}/` }];
+const ld = [
+  breadcrumbs(crumbs),
+  {
+    '@type': 'CollectionPage',
+    name: g.h1,
+    description: g.seo,
+    url: abs(`/${region}/`),
+    hasPart: recs.map((r) => ({ '@type': 'NewsArticle', headline: r.data.title, url: abs(recordUrl(r)) })),
+  },
+];
+---
+<Base title={`${g.h1}: latest, fact-checked`} description={g.seo} jsonld={ld}>
+  <section class="border-b border-line" style="--v:var(--lime);background:radial-gradient(60rem 22rem at 0% 0%,color-mix(in oklab,var(--v) 14%,transparent),transparent 65%)">
+    <div class="wrap pb-8 pt-5">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="display mt-6 text-[2.5rem] sm:text-[3.8rem]"><span aria-hidden="true">{g.flag}</span> {g.label} lore</h1>
+      <p class="mt-2 max-w-2xl text-[1.02rem] text-muted">{g.seo}</p>
+      {recs.length > 0 && <div class="mt-6"><StoryRail records={recs.slice(0, 10)} /></div>}
+    </div>
+  </section>
+
+  <section class="wrap mt-6" aria-label={`${g.label} stories`}>
+    {topics.length > 1 && (
+      <div class="no-bar -mx-1 mb-4 flex gap-2 overflow-x-auto px-1" role="group" aria-label="Filter by topic" data-filter>
+        <button type="button" class="chip !min-h-10 !px-4 !text-[0.85rem] cursor-pointer" aria-pressed="true" data-v="all">All</button>
+        {topics.map((v) => <button type="button" class="chip !min-h-10 !px-4 !text-[0.85rem] cursor-pointer" aria-pressed="false" data-v={v}>{VERTICAL[v].emoji} {VERTICAL[v].label}</button>)}
+      </div>
+    )}
+    {recs.length === 0 && <p class="card p-6 text-muted">No fresh {g.label} stories right now. Check back soon.</p>}
+    {lead && <div data-card={lead.data.vertical}><RecordCard r={lead} variant="lead" /></div>}
+    <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {rest.map((r) => <div data-card={r.data.vertical}><RecordCard r={r} /></div>)}
+    </div>
+  </section>
+
+  <section class="wrap mt-12" aria-labelledby="next">
+    <h2 id="next" class="display text-[1.6rem]">⏭ What's next in {g.label}</h2>
+    <div class="mt-4"><NextUp region={region} /></div>
+  </section>
+
+  <script>
+    const box = document.querySelector<HTMLElement>('[data-filter]');
+    box?.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-v]');
+      if (!b) return;
+      box.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      document.querySelectorAll<HTMLElement>('[data-card]').forEach((el) => (el.hidden = b.dataset.v !== 'all' && el.dataset.card !== b.dataset.v));
+    });
+  </script>
+  <style>
+    [data-filter] button[aria-pressed='true'] { background: var(--lime); color: var(--on-lime); border-color: transparent; }
+  </style>
+</Base>

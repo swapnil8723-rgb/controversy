@@ -4,15 +4,14 @@ import Base from '../../../layouts/Base.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import StatusChip from '../../../components/StatusChip.astro';
 import Fresh from '../../../components/Fresh.astro';
-import Faceoff from '../../../components/Faceoff.astro';
 import VerticalTag from '../../../components/VerticalTag.astro';
 import Claim from '../../../components/Claim.astro';
 import SourceSheets from '../../../components/SourceSheets.astro';
 import ShareBar from '../../../components/ShareBar.astro';
 import StoryMode from '../../../components/StoryMode.astro';
 import RecordCard from '../../../components/RecordCard.astro';
-import { loadAll, entitiesOf, entityUrl, explainerUrl, recordUrl, faceoffOf, type Rec } from '../../../lib/content';
-import { VERTICAL, STATUS } from '../../../lib/taxonomy';
+import { loadAll, entitiesOf, entityUrl, explainerUrl, recordUrl, regionUrl, type Rec } from '../../../lib/content';
+import { VERTICAL, STATUS, REGION } from '../../../lib/taxonomy';
 import { day, month, iso, anchor } from '../../../lib/format';
 import { article, breadcrumbs } from '../../../lib/jsonld';
 import { BRAND } from '../../../site';
@@ -28,7 +27,6 @@ const { Content } = await render(r);
 const hasBody = !!r.body?.trim();
 const { records, explainers } = await loadAll();
 const ents = await entitiesOf(r);
-const pair = await faceoffOf(r);
 const related = d.related.map((ref) => records.find((x) => x.id === ref.id)).filter((x): x is Rec => !!x);
 const moreSame = records.filter((x) => x.data.vertical === d.vertical && x.id !== r.id && !related.includes(x)).slice(0, 3 - Math.min(3, related.length));
 const explained = explainers.filter((x) => x.data.records.some((ref) => ref.id === r.id));
@@ -73,8 +71,11 @@ const ld = [
           <Fresh r={r} />
         </div>
         <h1 class="display mt-4 max-w-4xl text-[2.15rem] sm:text-[3.4rem]">{d.title}</h1>
-        <div class="mt-6 flex flex-wrap items-center justify-between gap-4" data-pagefind-ignore>
-          <Faceoff pair={pair} ents={ents} size={48} names />
+        <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2" data-pagefind-ignore>
+          <span class="flex flex-wrap gap-1.5">
+            {d.regions.map((g) => <a href={regionUrl(g)} class="chip no-underline hover:border-muted"><span aria-hidden="true">{REGION[g].flag}</span>{REGION[g].label}</a>)}
+          </span>
+          <p class="text-sm text-muted">Involves {ents.slice(0, 3).map((e, i) => <>{i > 0 && ', '}<a href={entityUrl(e)} class="font-semibold text-text hover:underline">{e.data.name}</a></>)}</p>
           <p class="mono text-muted">
             Verified <time datetime={iso(d.lastVerified)}>{day(d.lastVerified)}</time> · {sourceCount} sources ({primaryCount} primary) · {minutes} min
           </p>

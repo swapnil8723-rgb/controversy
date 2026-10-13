@@ -4,13 +4,14 @@ import RecordCard from '../components/RecordCard.astro';
 import StoryRail from '../components/StoryRail.astro';
 import NextUp from '../components/NextUp.astro';
 import { loadAll, explainerUrl, ageDays, FRESH_DAYS } from '../lib/content';
-import { VERTICALS, VERTICAL } from '../lib/taxonomy';
+import { VERTICALS, VERTICAL, REGIONS, REGION } from '../lib/taxonomy';
 import { BRAND } from '../site';
 
 const { records, explainers } = await loadAll();
 const fresh = records.filter((r) => ageDays(r) <= FRESH_DAYS);
 const [lead, ...rest] = fresh;
 const counts = Object.fromEntries(VERTICALS.map((v) => [v, fresh.filter((r) => r.data.vertical === v).length]));
+const topics = VERTICALS.filter((v) => counts[v] > 0);
 const sources = fresh.reduce((n, r) => n + r.data.sources.length, 0);
 ---
 <Base title={`${BRAND.name}: this month's controversies, fact-checked`} description={BRAND.description}>
@@ -24,20 +25,26 @@ const sources = fresh.reduce((n, r) => n + r.data.sources.length, 0);
     <h1 id="hero" class="display mt-2 text-[2.6rem] sm:text-[4.2rem]">What's the lore?</h1>
     <p class="mt-2 max-w-xl text-[1.02rem] text-muted">This month's controversies, fact-checked. What happened, what's proven, what's only alleged, and where it stands now.</p>
 
-    <!-- Topic filter: one feed, filtered in place (no separate thin URLs) -->
-    <div class="no-bar -mx-1 mt-6 flex gap-2 overflow-x-auto px-1" role="group" aria-label="Filter by topic" data-filter>
-      <button type="button" class="chip !min-h-10 !px-4 !text-[0.85rem] cursor-pointer" aria-pressed="true" data-v="all">All</button>
-      {VERTICALS.map((v) => (
-        <button type="button" class="chip !min-h-10 !px-4 !text-[0.85rem] cursor-pointer" aria-pressed="false" data-v={v}>{VERTICAL[v].emoji} {VERTICAL[v].label} <span class="text-muted">{counts[v]}</span></button>
+    <!-- Region + topic filters: one feed, filtered in place (no thin filter URLs). The
+         region choice is remembered on this device. -->
+    <div class="no-bar -mx-1 mt-6 flex gap-2 overflow-x-auto px-1" role="group" aria-label="Filter by region" data-group="region">
+      <button type="button" class="chip !min-h-10 !px-4 !text-[0.85rem] cursor-pointer" aria-pressed="true" data-val="all">🌍 Everywhere</button>
+      {REGIONS.map((g) => <button type="button" class="chip !min-h-10 !px-4 !text-[0.85rem] cursor-pointer" aria-pressed="false" data-val={g}>{REGION[g].flag} {REGION[g].label}</button>)}
+    </div>
+    <div class="no-bar -mx-1 mt-2 flex gap-2 overflow-x-auto px-1" role="group" aria-label="Filter by topic" data-group="topic">
+      <button type="button" class="chip !min-h-9 !px-3.5 cursor-pointer" aria-pressed="true" data-val="all">All topics</button>
+      {topics.map((v) => (
+        <button type="button" class="chip !min-h-9 !px-3.5 cursor-pointer" aria-pressed="false" data-val={v}>{VERTICAL[v].emoji} {VERTICAL[v].label} <span class="text-muted">{counts[v]}</span></button>
       ))}
     </div>
   </section>
 
   <section class="wrap mt-5" aria-label="Fresh stories">
-    {lead && <div data-card={lead.data.vertical}><RecordCard r={lead} variant="lead" /></div>}
+    {lead && <div data-card={lead.data.vertical} data-regions={lead.data.regions.join(' ')}><RecordCard r={lead} variant="lead" /></div>}
     <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {rest.map((r) => <div data-card={r.data.vertical}><RecordCard r={r} /></div>)}
+      {rest.map((r) => <div data-card={r.data.vertical} data-regions={r.data.regions.join(' ')}><RecordCard r={r} /></div>)}
     </div>
+    <p class="mt-6 hidden text-center text-muted" data-empty>Nothing here for this filter yet. Try another region or topic.</p>
     <p class="mt-6 text-center text-sm text-muted">That's everything from the last {FRESH_DAYS} days.</p>
   </section>
 
@@ -74,17 +81,31 @@ const sources = fresh.reduce((n, r) => n + r.data.sources.length, 0);
   </section>
 
   <script>
-    const box = document.querySelector<HTMLElement>('[data-filter]');
-    box?.addEventListener('click', (e) => {
-      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-v]');
-      if (!b) return;
-      const want = b.dataset.v;
-      box.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      document.querySelectorAll<HTMLElement>('[data-card]').forEach((el) => (el.hidden = want !== 'all' && el.dataset.card !== want));
-    });
+    const state = { region: 'all', topic: 'all' };
+    const apply = () => {
+      let shown = 0;
+      document.querySelectorAll<HTMLElement>('[data-card]').forEach((el) => {
+        const ok = (state.topic === 'all' || el.dataset.card === state.topic) && (state.region === 'all' || (el.dataset.regions ?? '').split(' ').includes(state.region));
+        el.hidden = !ok;
+        if (ok) shown++;
+      });
+      document.querySelector<HTMLElement>('[data-empty]')?.classList.toggle('hidden', shown > 0);
+      for (const group of ['region', 'topic'] as const)
+        document.querySelectorAll<HTMLButtonElement>(`[data-group="${group}"] button`).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.val === state[group])));
+    };
+    for (const group of ['region', 'topic'] as const) {
+      document.querySelector(`[data-group="${group}"]`)?.addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-val]');
+        if (!b) return;
+        state[group] = b.dataset.val!;
+        if (group === 'region') try { localStorage.setItem('region', state.region); } catch {}
+        apply();
+      });
+    }
+    try { const saved = localStorage.getItem('region'); if (saved) { state.region = saved; apply(); } } catch {}
   </script>
   <style>
-    [data-filter] button[aria-pressed='true'] { background: var(--lime); color: var(--on-lime); border-color: transparent; }
-    [data-filter] button[aria-pressed='true'] span { color: inherit; opacity: 0.7; }
+    [data-group] button[aria-pressed='true'] { background: var(--lime); color: var(--on-lime); border-color: transparent; }
+    [data-group] button[aria-pressed='true'] span { color: inherit; opacity: 0.7; }
   </style>
 </Base>

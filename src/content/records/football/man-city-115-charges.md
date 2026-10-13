@@ -8,11 +8,11 @@ tldr:
   - "On 29 September 2026 the league said the commission had found City guilty of all charges related to its financial rules, and upheld most of the co-operation charges."
   - "City lodged an appeal on 1 October 2026 and says it is innocent. No sanction has been set: that comes at a separate, private hearing."
 vertical: football
+regions: [europe]
 status: in-court
 statusNote: "Under appeal to an independent Appeal Board. Sanctions will be decided at a separate hearing; no date has been announced."
 riskTier: medium
 entities: [manchester-city, premier-league]
-faceoff: [manchester-city, premier-league]
 keywords: ["man city 115 charges", "man city verdict", "manchester city appeal", "premier league financial rules", "man city charges explained"]
 keyFacts:
   - { label: "Seasons covered", value: "2009/10 to 2017/18 (financial rules)" }

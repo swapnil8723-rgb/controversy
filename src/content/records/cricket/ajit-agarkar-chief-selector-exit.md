@@ -8,6 +8,7 @@ tldr:
   - "Pragyan Ojha is interim chair. On 6 October the BCCI invited applications for the empty seat, with a 14 October deadline."
   - "Some outlets link the exit to friction over Rohit Sharma's ODI future. That is reported, not confirmed: the BCCI has not given a reason."
 vertical: cricket
+regions: [india]
 status: ongoing
 statusNote: "The BCCI is choosing a new selector. Applications close on 14 October; no successor has been named."
 riskTier: medium

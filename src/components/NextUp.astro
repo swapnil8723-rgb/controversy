@@ -1,14 +1,15 @@
 ---
 // "What's next": the upcoming dates in the stories we track, soonest first.
 import { recordUrl, upcoming, BUILD_TIME } from '../lib/content';
-import { VERTICAL, type Vertical } from '../lib/taxonomy';
+import { VERTICAL, type Vertical, type Region } from '../lib/taxonomy';
 import { iso } from '../lib/format';
-interface Props { vertical?: Vertical; limit?: number }
-const { vertical, limit = 6 } = Astro.props;
-const items = (await upcoming()).filter((x) => !vertical || x.r.data.vertical === vertical).slice(0, limit);
+interface Props { vertical?: Vertical; region?: Region; limit?: number }
+const { vertical, region, limit = 6 } = Astro.props;
+const items = (await upcoming()).filter((x) => (!vertical || x.r.data.vertical === vertical) && (!region || x.r.data.regions.includes(region))).slice(0, limit);
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const inDays = (d: Date) => Math.round((d.getTime() - new Date(BUILD_TIME.toISOString().slice(0, 10)).getTime()) / 864e5);
 ---
+{items.length === 0 && <p class="text-sm text-muted">No upcoming dates right now.</p>}
 {items.length > 0 && (
   <ol class="no-bar flex gap-3 overflow-x-auto pb-1">
     {items.map(({ r, date, label }) => {

@@ -4,7 +4,6 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import RecordCard from '../../components/RecordCard.astro';
 import StoryRail from '../../components/StoryRail.astro';
 import NextUp from '../../components/NextUp.astro';
-import Avatar from '../../components/Avatar.astro';
 import { loadAll, explainerUrl, entityUrl, recordsOfEntity, upcoming } from '../../lib/content';
 import { VERTICALS, VERTICAL, type Vertical } from '../../lib/taxonomy';
 import { breadcrumbs } from '../../lib/jsonld';
@@ -80,8 +79,7 @@ const ld = [
       <ul class="mt-4 flex flex-wrap gap-2">
         {ents.map(({ e, n }) => (
           <li>
-            <a href={entityUrl(e)} class="card lift flex items-center gap-2.5 py-1.5 pl-1.5 pr-4 no-underline" style={`--v:var(--${vertical})`}>
-              <Avatar e={e} size={32} />
+            <a href={entityUrl(e)} class="card lift flex items-center gap-2 px-4 py-2 no-underline" style={`--v:var(--${vertical})`}>
               <span class="text-sm font-semibold">{e.data.name}</span>
               <span class="text-xs text-muted">{n}</span>
             </a>

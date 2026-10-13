@@ -1,30 +1,75 @@
 // Verticals, statuses, entity kinds and source tiers: the fixed vocabulary every
 // page, chip and schema check shares.
 
-export const VERTICALS = ['football', 'cricket', 'entertainment'] as const;
+export const VERTICALS = ['football', 'cricket', 'entertainment', 'tech-ai', 'gaming', 'creators'] as const;
 export type Vertical = (typeof VERTICALS)[number];
 
 export const VERTICAL: Record<Vertical, { label: string; emoji: string; blurb: string; seo: string; h1: string }> = {
   football: {
     label: 'Football',
     emoji: '⚽',
-    blurb: 'Financial charges, VAR calls, points deductions and governing-body rulings.',
-    seo: "The latest football (soccer) controversies, fact-checked: rulings, appeals, FIFA and UEFA fights and match-day rows from the last 30 days.",
+    blurb: 'Rulings, appeals, VAR rows and governing-body fights.',
+    seo: 'The latest football (soccer) controversies, fact-checked: rulings, appeals, FIFA and UEFA fights and match-day rows from the last 30 days.',
     h1: 'Football controversies',
   },
   cricket: {
     label: 'Cricket',
     emoji: '🏏',
-    blurb: 'Laws, the spirit of cricket, board rulings and the dismissals everyone argued about.',
-    seo: "The latest cricket controversies, fact-checked: board decisions, selection rows, ICC rulings and the disputes fans are arguing about this month.",
+    blurb: 'Board decisions, selection rows and the calls fans argue about.',
+    seo: 'The latest cricket controversies, fact-checked: board decisions, selection rows, ICC rulings and the disputes fans are arguing about this month.',
     h1: 'Cricket controversies',
   },
   entertainment: {
     label: 'Entertainment',
     emoji: '🎬',
-    blurb: 'Film, music and streaming disputes backed by court records and on-record statements.',
-    seo: "The latest entertainment controversies, fact-checked: music, film and celebrity lawsuits and disputes from the last 30 days, with both sides.",
+    blurb: 'Film, music and TV disputes backed by court records and statements.',
+    seo: 'The latest entertainment controversies, fact-checked: music, film and celebrity lawsuits and disputes from the last 30 days, with both sides.',
     h1: 'Entertainment controversies',
+  },
+  'tech-ai': {
+    label: 'Tech & AI',
+    emoji: '🤖',
+    blurb: 'AI lawsuits, privacy rows, deepfakes and regulators taking on Big Tech.',
+    seo: 'The latest tech and AI controversies, fact-checked: AI copyright lawsuits, deepfake rulings, privacy backlash and regulator action from the last 30 days.',
+    h1: 'Tech & AI controversies',
+  },
+  gaming: {
+    label: 'Gaming',
+    emoji: '🎮',
+    blurb: 'Studio disputes, lawsuits, pricing fights and industry rows.',
+    seo: 'The latest gaming controversies, fact-checked: studio and union disputes, lawsuits, pricing rows and platform fights from the last 30 days.',
+    h1: 'Gaming controversies',
+  },
+  creators: {
+    label: 'Creators',
+    emoji: '📱',
+    blurb: 'YouTubers, streamers and influencers: bans, lawsuits and backlash.',
+    seo: 'The latest creator and influencer controversies, fact-checked: YouTuber, streamer and influencer bans, lawsuits and backlash from the last 30 days.',
+    h1: 'Creator controversies',
+  },
+};
+
+// Regions: where a story matters most. A story can belong to more than one; the first is primary.
+export const REGIONS = ['india', 'america', 'europe'] as const;
+export type Region = (typeof REGIONS)[number];
+export const REGION: Record<Region, { label: string; flag: string; seo: string; h1: string }> = {
+  india: {
+    label: 'India',
+    flag: '🇮🇳',
+    seo: "India's latest controversies, fact-checked: cricket, Bollywood, creators, tech and AI rows from the last 30 days, with every source linked.",
+    h1: 'India controversies',
+  },
+  america: {
+    label: 'America',
+    flag: '🇺🇸',
+    seo: 'The latest US and Americas controversies, fact-checked: celebrity lawsuits, AI and tech fights, gaming and sports rows from the last 30 days.',
+    h1: 'America controversies',
+  },
+  europe: {
+    label: 'Europe',
+    flag: '🇪🇺',
+    seo: "Europe's latest controversies, fact-checked: football rulings, UK and EU tech regulation, music and gaming disputes from the last 30 days.",
+    h1: 'Europe controversies',
   },
 };
 

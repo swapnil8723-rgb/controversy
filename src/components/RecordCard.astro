@@ -2,20 +2,19 @@
 // Story card. "lead" is the big top-of-feed card; "row" is a compact list item.
 import StatusChip from './StatusChip.astro';
 import Fresh from './Fresh.astro';
-import Faceoff from './Faceoff.astro';
-import { recordUrl, entitiesOf, faceoffOf, type Rec } from '../lib/content';
-import { VERTICAL } from '../lib/taxonomy';
+import { recordUrl, type Rec } from '../lib/content';
+import { VERTICAL, REGION } from '../lib/taxonomy';
 import { day } from '../lib/format';
 interface Props { r: Rec; variant?: 'default' | 'lead' | 'row'; showVertical?: boolean }
 const { r, variant = 'default', showVertical = true } = Astro.props;
 const d = r.data;
 const v = d.vertical;
-const pair = await faceoffOf(r);
-const ents = await entitiesOf(r);
+const flags = d.regions.map((x) => REGION[x].flag).join(' ');
+const where = d.regions.map((x) => REGION[x].label).join(', ');
 ---
 {variant === 'row' ? (
   <a href={recordUrl(r)} class="card lift group flex items-center gap-3 p-3 no-underline" style={`--v:var(--${v})`}>
-    <Faceoff pair={pair} ents={ents} size={34} />
+    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-xl" style="background:color-mix(in oklab,var(--v) 18%,transparent)" aria-hidden="true">{VERTICAL[v].emoji}</span>
     <span class="min-w-0 flex-1">
       <span class="line-clamp-2 font-bold leading-snug group-hover:underline">{d.title}</span>
       <span class="mt-1 flex flex-wrap items-center gap-1.5"><Fresh r={r} /><StatusChip status={d.status} /></span>
@@ -27,18 +26,21 @@ const ents = await entitiesOf(r);
     class:list={['card lift group relative flex h-full flex-col overflow-hidden no-underline', variant === 'lead' ? 'wash p-5 sm:p-7' : 'p-4']}
     style={`--v:var(--${v})`}
     data-vertical={v}
+    data-regions={d.regions.join(' ')}
   >
     <span class="absolute inset-x-0 top-0 h-1" style="background:linear-gradient(90deg,var(--v),transparent)" aria-hidden="true"></span>
     <span class="flex items-center justify-between gap-2">
-      <Faceoff pair={pair} ents={ents} size={variant === 'lead' ? 52 : 38} />
+      <span class="flex flex-wrap items-center gap-1.5">
+        {showVertical && <span class="chip" style="color:var(--v);border-color:color-mix(in oklab,var(--v) 40%,transparent)"><span aria-hidden="true">{VERTICAL[v].emoji}</span>{VERTICAL[v].label}</span>}
+        <span class="chip text-muted" title={where}><span aria-hidden="true">{flags}</span><span class="sr-only">{where}</span></span>
+      </span>
       <Fresh r={r} />
     </span>
-    {showVertical && <span class="label mt-4" style="color:var(--v)">{VERTICAL[v].emoji} {VERTICAL[v].label}</span>}
-    <span class:list={['display mt-1.5 group-hover:underline decoration-2 underline-offset-4', variant === 'lead' ? 'text-[1.9rem] sm:text-[2.6rem]' : 'text-[1.32rem]', !showVertical && 'mt-4']}>{d.title}</span>
+    <span class:list={['display mt-3.5 group-hover:underline decoration-2 underline-offset-4', variant === 'lead' ? 'text-[1.95rem] sm:text-[2.7rem]' : 'text-[1.32rem]']}>{d.title}</span>
     <span class:list={['mt-2.5 text-muted', variant === 'lead' ? 'text-[1.02rem] line-clamp-3' : 'text-[0.92rem] line-clamp-2']}>{variant === 'lead' ? d.tldr[0] : d.summary}</span>
     <span class="mt-auto flex flex-wrap items-center gap-1.5 pt-4">
       <StatusChip status={d.status} />
-      {d.next && <span class="chip" style="color:var(--lime);border-color:color-mix(in oklab,var(--lime) 35%,transparent)">⏭ {day(d.next.date)} · {d.next.label}</span>}
+      {d.next && <span class="chip" style="color:var(--link);border-color:color-mix(in oklab,var(--link) 35%,transparent)">⏭ {day(d.next.date)} · {d.next.label}</span>}
       <span class="chip text-muted">🧾 {d.sources.length}</span>
     </span>
   </a>

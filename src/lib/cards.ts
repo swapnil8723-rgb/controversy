@@ -24,7 +24,7 @@ const loadFonts = () =>
 
 export const C = {
   bg: '#09090D', card: '#15151D', line: '#2A2A36', ink: '#F5F5F8', muted: '#A3A3B6', accent: '#C4FF3D',
-  football: '#2EE59D', cricket: '#5B9DFF', entertainment: '#FF5FAE',
+  football: '#2EE59D', cricket: '#5B9DFF', entertainment: '#FF5FAE', 'tech-ai': '#2DD4FF', gaming: '#FF8A3D', creators: '#C084FC',
   ongoing: '#FFB020', 'in-court': '#B18CFF', resolved: '#3DDC84', disputed: '#FF7A59', 'insufficient-information': '#9A9AAE',
 } as const;
 

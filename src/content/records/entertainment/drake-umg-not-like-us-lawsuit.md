@@ -8,11 +8,11 @@ tldr:
   - "On 9 October 2025 a federal judge in New York dismissed the suit, ruling the song's statements were 'nonactionable opinion'."
   - "Drake appealed to the Second Circuit; UMG called the suit 'an affront to all artists'. Oral argument is scheduled for 4 December 2026."
 vertical: entertainment
+regions: [america]
 status: in-court
 statusNote: "On appeal at the US Court of Appeals for the Second Circuit (Graham v. UMG Recordings). Argument is set for 4 December 2026."
 riskTier: medium
 entities: [drake, universal-music-group, kendrick-lamar]
-faceoff: [drake, universal-music-group]
 next: { date: 2026-12-04, label: "Appeal argument, Second Circuit" }
 keywords: ["drake lawsuit umg", "drake not like us lawsuit", "drake appeal", "drake defamation case", "kendrick lamar drake lawsuit"]
 keyFacts:

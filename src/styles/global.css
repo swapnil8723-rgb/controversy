@@ -22,6 +22,9 @@
   --football: #2ee59d;
   --cricket: #5b9dff;
   --entertainment: #ff5fae;
+  --tech-ai: #2dd4ff;
+  --gaming: #ff8a3d;
+  --creators: #c084fc;
   --st-ongoing: #ffb020;
   --st-court: #b18cff;
   --st-resolved: #3ddc84;
@@ -29,10 +32,6 @@
   --st-insufficient: #9a9aae;
   --hot: #ff5a36;
   --shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 10px 30px -18px rgb(0 0 0 / 0.8);
-  /* Avatar fills stay bright in both themes so their dark monograms keep contrast. */
-  --av-football: #2ee59d;
-  --av-cricket: #5b9dff;
-  --av-entertainment: #ff5fae;
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
@@ -49,6 +48,9 @@
     --football: #00805a;
     --cricket: #1f5fd6;
     --entertainment: #c2186b;
+    --tech-ai: #0e7490;
+    --gaming: #c2410c;
+    --creators: #7e22ce;
     --st-ongoing: #9a5b00;
     --st-court: #6b3fd1;
     --st-resolved: #1a7f45;
@@ -72,6 +74,9 @@
   --football: #00805a;
   --cricket: #1f5fd6;
   --entertainment: #c2186b;
+  --tech-ai: #0e7490;
+  --gaming: #c2410c;
+  --creators: #7e22ce;
   --st-ongoing: #9a5b00;
   --st-court: #6b3fd1;
   --st-resolved: #1a7f45;

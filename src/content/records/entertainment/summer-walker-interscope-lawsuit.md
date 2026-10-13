@@ -8,11 +8,11 @@ tldr:
   - "Interscope says the deal requires five studio albums and counts only three. It says her EPs don't count toward the total."
   - "Walker's lawyers say California's seven-year rule means the contract can no longer be enforced. Both sides say they are still talking."
 vertical: entertainment
+regions: [america]
 status: in-court
 statusNote: "Filed in Los Angeles County Superior Court on 9 Oct 2026. No hearing date reported; both sides say talks continue."
 riskTier: low
 entities: [summer-walker, interscope, universal-music-group]
-faceoff: [interscope, summer-walker]
 keywords: ["summer walker lawsuit", "interscope summer walker", "summer walker 50 million", "seven year rule california", "summer walker record deal"]
 keyFacts:
   - { label: "Filed", value: "9 Oct 2026, LA County Superior Court" }

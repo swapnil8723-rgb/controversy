@@ -1,7 +1,7 @@
 import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { VERTICALS, STATUSES, ENTITY_KINDS, TIERS, CLAIM_KINDS } from './lib/taxonomy';
+import { VERTICALS, REGIONS, STATUSES, ENTITY_KINDS, TIERS, CLAIM_KINDS } from './lib/taxonomy';
 
 // Legal guards live in the schema, so a page with an unsourced claim, or an allegation
 // with no response, cannot build. Sources are declared once per page and cited by id.
@@ -54,12 +54,11 @@ const records = defineCollection({
       summary: z.string().max(160),
       tldr: z.array(z.string().max(200)).length(3), // the 30-second version
       vertical: z.enum(VERTICALS),
+      regions: z.array(z.enum(REGIONS)).min(1), // first one is the primary region
       status: z.enum(STATUSES),
       statusNote: z.string().max(220), // one line: where it stands today
       riskTier: z.enum(['low', 'medium']), // 'high' is not publishable in phase 1
       entities: z.array(reference('entities')).min(1),
-      // The two sides shown as "A vs B" on cards and the page header (defaults to the first two entities).
-      faceoff: z.tuple([reference('entities'), reference('entities')]).optional(),
       // The next known date in the story (hearing, deadline, meeting), shown as "What's next".
       next: z.object({ date: z.coerce.date(), label: z.string().max(60) }).optional(),
       keywords: z.array(z.string()).default([]),

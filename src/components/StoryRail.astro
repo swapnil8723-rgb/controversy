@@ -1,17 +1,16 @@
 ---
 // Instagram-style story bubbles for the freshest stories. Tapping one opens the story
-// straight into story mode (#story).
-import Avatar from './Avatar.astro';
-import { recordUrl, entitiesOf, isNew, type Rec } from '../lib/content';
+// straight into story mode (#story). The bubble shows the topic, not a person.
+import { recordUrl, isNew, type Rec } from '../lib/content';
+import { VERTICAL } from '../lib/taxonomy';
 interface Props { records: Rec[] }
 const { records } = Astro.props;
-const items = await Promise.all(records.map(async (r) => ({ r, e: (await entitiesOf(r))[0] })));
 ---
 <nav aria-label="Story mode for the latest stories" class="no-bar -mx-1 flex gap-3 overflow-x-auto px-1 py-1">
-  {items.map(({ r, e }) => (
+  {records.map((r) => (
     <a href={`${recordUrl(r)}#story`} class="group flex w-[4.6rem] shrink-0 flex-col items-center gap-1.5 text-center no-underline" style={`--v:var(--${r.data.vertical})`}>
-      <span class="rounded-full p-[3px] transition-transform group-hover:scale-105" style={isNew(r) ? 'background:conic-gradient(from 210deg,var(--v),var(--lime),var(--hot),var(--v))' : 'background:linear-gradient(140deg,var(--v),color-mix(in oklab,var(--v) 40%,transparent))'}>
-        <span class="block rounded-full p-[2px]" style="background:var(--bg)"><Avatar e={e} size={60} /></span>
+      <span class="rounded-full p-[3px] transition-transform group-hover:scale-105" style={isNew(r) ? 'background:conic-gradient(from 210deg,var(--v),var(--lime),var(--hot),var(--v))' : 'background:linear-gradient(140deg,var(--v),color-mix(in oklab,var(--v) 35%,transparent))'}>
+        <span class="flex h-[60px] w-[60px] items-center justify-center rounded-full text-[1.7rem]" style="background:radial-gradient(circle at 30% 25%,color-mix(in oklab,var(--v) 30%,var(--card)),var(--card));box-shadow:0 0 0 2px var(--bg)" aria-hidden="true">{VERTICAL[r.data.vertical].emoji}</span>
       </span>
       <span class="line-clamp-2 text-[0.72rem] font-semibold leading-tight">{r.data.tag}</span>
     </a>

@@ -8,11 +8,11 @@ tldr:
   - "Jolie denies any binding agreement required his approval. Her lawyer says Pitt's demands are attempts 'to control her'."
   - "On 6 October 2026 a judge denied Pitt's request for Jolie's 2017-2019 financial records. He can ask again if her income becomes an issue at trial."
 vertical: entertainment
+regions: [america]
 status: in-court
 statusNote: "The case is in pre-trial discovery in Los Angeles Superior Court. No trial date confirmed in the sources we checked."
 riskTier: medium
 entities: [brad-pitt, angelina-jolie]
-faceoff: [brad-pitt, angelina-jolie]
 keywords: ["brad pitt angelina jolie lawsuit", "chateau miraval case", "brad pitt winery lawsuit", "angelina jolie financial records ruling", "miraval stoli"]
 keyFacts:
   - { label: "Filed", value: "Feb 2022, Los Angeles" }

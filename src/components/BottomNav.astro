@@ -1,26 +1,24 @@
 ---
-// Phone-first, one-thumb navigation: five items, 44px+ targets.
+// Phone-first, one-thumb navigation: five items, 44px+ targets. Topics live in the
+// filter chips on every hub page; regions get the thumb.
 const path = Astro.url.pathname;
 const items = [
-  { href: '/football/', label: 'Football', icon: '⚽', v: 'football' },
-  { href: '/cricket/', label: 'Cricket', icon: '🏏', v: 'cricket' },
-  { href: '/entertainment/', label: 'Ent.', icon: '🎬', v: 'entertainment' },
-  { href: '/latest/', label: 'Latest', icon: '⚡', v: 'link' },
-  { href: '/search/', label: 'Search', icon: '🔎', v: 'link' },
+  { href: '/', label: 'Home', icon: '🏠', on: path === '/' },
+  { href: '/india/', label: 'India', icon: '🇮🇳', on: path.startsWith('/india/') },
+  { href: '/america/', label: 'America', icon: '🇺🇸', on: path.startsWith('/america/') },
+  { href: '/europe/', label: 'Europe', icon: '🇪🇺', on: path.startsWith('/europe/') },
+  { href: '/search/', label: 'Search', icon: '🔎', on: path.startsWith('/search/') },
 ];
 ---
 <nav aria-label="Primary" class="fixed inset-x-0 bottom-0 z-40 border-t border-line md:hidden" style="background:color-mix(in oklab,var(--bg) 90%,transparent);backdrop-filter:blur(12px);padding-bottom:env(safe-area-inset-bottom)">
   <ul class="grid grid-cols-5">
-    {items.map((it) => {
-      const on = path.startsWith(it.href);
-      return (
-        <li>
-          <a href={it.href} class="flex min-h-14 flex-col items-center justify-center gap-0.5 text-[0.7rem] font-semibold no-underline" style={on ? `color:var(--${it.v})` : 'color:var(--muted)'} aria-current={on ? 'page' : undefined}>
-            <span class="text-lg leading-none" aria-hidden="true">{it.icon}</span>{it.label}
-            <span class="h-0.5 w-6 rounded-full" style={on ? `background:var(--${it.v})` : ''}></span>
-          </a>
-        </li>
-      );
-    })}
+    {items.map((it) => (
+      <li>
+        <a href={it.href} class="flex min-h-14 flex-col items-center justify-center gap-0.5 text-[0.7rem] font-semibold no-underline" style={it.on ? 'color:var(--link)' : 'color:var(--muted)'} aria-current={it.on ? 'page' : undefined}>
+          <span class="text-lg leading-none" aria-hidden="true">{it.icon}</span>{it.label}
+          <span class="h-0.5 w-6 rounded-full" style={it.on ? 'background:var(--link)' : ''}></span>
+        </a>
+      </li>
+    ))}
   </ul>
 </nav>

@@ -8,11 +8,11 @@ tldr:
   - "The row goes back to WCL 2025, when India Champions refused to play Pakistan Champions twice, including in the semi-final."
   - "Reports say the PCB wanted a written apology from India's players, which organisers refused. All six Pakistan Champions games are off, including India v Pakistan on 10 October."
 vertical: cricket
+regions: [india]
 status: disputed
 statusNote: "Pakistan Champions will not play WCL 2026. The dispute between the PCB and the organisers behind it is unresolved."
 riskTier: low
 entities: [pakistan-champions, pcb, world-championship-of-legends, india-champions]
-faceoff: [pcb, world-championship-of-legends]
 keywords: ["pakistan champions wcl 2026", "why pakistan not playing wcl", "pcb noc wcl", "india vs pakistan champions cancelled", "world championship of legends 2026"]
 keyFacts:
   - { label: "Tournament", value: "World Championship of Legends 2026, UAE" }

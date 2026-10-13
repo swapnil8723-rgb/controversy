@@ -8,11 +8,11 @@ tldr:
   - "In August UEFA asked a US federal court for documents and testimony to use in a planned criminal complaint in Switzerland about the plan."
   - "On 29 September FIFA told the court UEFA was spreading misinformation to influence FIFA's presidential election, and called the claims against Infantino 'categorically without merit'."
 vertical: football
+regions: [europe, america]
 status: in-court
 statusNote: "A US federal court in Florida is weighing UEFA's request for evidence. FIFA's presidential election is due in March."
 riskTier: medium
 entities: [fifa, uefa, gianni-infantino]
-faceoff: [fifa, uefa]
 next: { date: 2026-10-15, label: "FIFA Council meeting" }
 keywords: ["fifa uefa misinformation campaign", "infantino world cup sale", "fifa world cup private equity plan", "uefa infantino criminal complaint", "fifa forward enterprise"]
 keyFacts:
@@ -93,5 +93,4 @@ published: 2026-10-13
 updated: 2026-10-13
 lastVerified: 2026-10-13
 reviewedBy: "Draft: awaiting editor sign-off"
-related: [fam-fifa-added-time-indonesia-bangladesh]
 ---

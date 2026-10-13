@@ -1,6 +1,6 @@
 // Content access, URLs and derived values (heat, entity links) shared by every page.
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { KIND_SEGMENT, type Vertical } from './taxonomy';
+import { KIND_SEGMENT, type Vertical, type Region } from './taxonomy';
 
 export type Rec = CollectionEntry<'records'>;
 export type Ent = CollectionEntry<'entities'>;
@@ -10,6 +10,7 @@ export const recordUrl = (r: Rec) => `/${r.data.vertical}/controversies/${r.id}/
 export const entityUrl = (e: Ent) => `/${e.data.vertical}/${KIND_SEGMENT[e.data.kind]}/${e.id}/`;
 export const explainerUrl = (x: Exp) => `/${x.data.vertical}/explained/${x.id}/`;
 export const verticalUrl = (v: Vertical) => `/${v}/`;
+export const regionUrl = (r: Region) => `/${r}/`;
 
 // Build time is "now" for every page in one build, so heat is stable within a deploy.
 export const BUILD_TIME = new Date();
@@ -57,21 +58,6 @@ export function shortAgo(days: number) {
   if (days < 14) return `${days}d ago`;
   if (days < 60) return `${Math.floor(days / 7)}w ago`;
   return `${Math.floor(days / 30.44)}mo ago`;
-}
-
-/** The two sides shown as "A vs B", only when the record names them explicitly. */
-export async function faceoffOf(r: Rec) {
-  if (!r.data.faceoff) return undefined;
-  const { entities } = await loadAll();
-  const [a, b] = r.data.faceoff.map((ref) => entities.find((e) => e.id === ref.id));
-  return a && b ? ([a, b] as const) : undefined;
-}
-
-/** Avatar label: the entity's own short form, or up to three initials. */
-export function initials(e: Ent) {
-  if (e.data.short) return e.data.short;
-  const words = e.data.name.replace(/[^\p{L}\p{N}\s]/gu, '').split(/\s+/).filter(Boolean);
-  return (words.length === 1 ? words[0].slice(0, 2) : words.slice(0, 3).map((w) => w[0]).join('')).toUpperCase();
 }
 
 /** Upcoming "what's next" dates across records, soonest first. */
