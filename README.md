@@ -45,7 +45,7 @@ Legal guards are enforced by the schema in `src/content.config.ts`, so the build
 4. **Answer-engine readiness**: `llms.txt`, a short-answer box on explainers, and entity `sameAs` links in JSON-LD.
 5. **Own sitemap**: `lastmod` uses the real "facts changed" date, and thin hubs are excluded. There is also a 48-hour Google News sitemap.
 6. **npm instead of pnpm**: the same Astro 7.3 + Tailwind 4.3 setup already builds cleanly with npm in the Protest project.
-7. **Heat score defined from data we hold**: it uses the record's own dated events rather than outlet counts, and the method is published on the editorial policy page.
+7. **Freshness instead of a heat score**: every story shows how long ago its latest verified development was (NEW within 3 days), and the site only carries the last 30 days.
 
 ## Before launch
 
